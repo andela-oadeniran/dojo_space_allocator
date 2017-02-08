@@ -1,24 +1,31 @@
-#!bin/python3*
+#!/bin/env python
 """
 This example uses docopt with the built in cmd module to demonstrate an
 interactive command application.
 Usage:
-    app.py create_room <room_type> <room_name>
-    app.py add_person <person_name> <FELLOW|STAFF> [wants_accommodation]
-    app.py (-i | --interactive)
-    app.py (-h | --help | --version)
+    app create_room <room_type> <room_name> ...
+    app add_room <person_name> <FELLOW/STAFF> [wants_accommodation]
+    app [-i | --interactive]
+    app
+    app (-h | --help | --version)
 Options:
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.
 """
 
-import sys
+#import modules
+import os, sys
+modelsdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir + '/dojo_space_allocator/models'))
+sys.path.append(modelsdir)
+
+from person import Person
+from room import Room
+
+
 import cmd
-
-
 from docopt import docopt, DocoptExit
 
-
+#define functions for docopt commands
 def docopt_cmd(func):
     """
     This decorator is used to simplify the try/except block and pass the result
@@ -50,23 +57,24 @@ def docopt_cmd(func):
     return fn
 
 
+#for interactive shell define the class
 class MyInteractive (cmd.Cmd):
-    intro = 'Welcome to interactive dojo!' \
+    intro = 'Welcome to my interactive program!' \
         + ' (type help for a list of commands.)'
     prompt = 'dojo>>>'
     file = None
 
+    #use decorators to define the functions
     @docopt_cmd
-    def do_tcp(self, arg):
-        """Usage: tcp <host> <port> [--timeout=<seconds>]"""
+    def do_create_room(self, arg):
+        """Usage: create_room <room_type> <room_name>"""
 
         print(arg)
 
     @docopt_cmd
-    def do_serial(self, arg):
-        """Usage: serial <port> [--baud=<n>] [--timeout=<seconds>]
-Options:
-    --baud=<n>  Baudrate [default: 9600]
+    def do_add_person(self, arg):
+        """Usage: add_person <person_name> <FELLOW/STAFF>
+        [wants_accommodation]
         """
 
         print(arg)
@@ -77,10 +85,11 @@ Options:
         print('Good Bye!')
         exit()
 
+#parse the argument
 opt = docopt(__doc__, sys.argv[1:])
 
-if opt['--interactive']:
+#allow the default for running the app to be interactive
+if opt['Interactive'] or not(opt['Options:']):
     MyInteractive().cmdloop()
 
 print(opt)
-
