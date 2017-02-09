@@ -1,7 +1,7 @@
 #!bin/python
 
 import os, sys
-modelsdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir+'/models'))
+modelsdir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../models'))
 sys.path.append(modelsdir)
 
 from person import Person
@@ -9,7 +9,7 @@ from person import Person
 import unittest
 
 class TestAddPerson(unittest.TestCase):
-	"""Input the Docstring"""
+	"""The tests cases for the """
 	def test_add_person_fellow(self):
 		new_person = Person("ladi", "FELLOW")
 		self.assertTrue(new_person)

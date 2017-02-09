@@ -1,8 +1,10 @@
 #!bin/python3*
 """ comment here"""
 import os, sys
-modelsdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir+'/models'))
+modelsdir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../models'))
 sys.path.append(modelsdir)
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 
 from room import Room
@@ -18,6 +20,7 @@ class TestCreateRoom(unittest.TestCase):
         self.assertTrue(blue_office)
         new_room_count = len(my_class_instance.all_rooms)
         self.assertEqual(new_room_count - initial_room_count, 1)
+    # def test_create
 
 
 

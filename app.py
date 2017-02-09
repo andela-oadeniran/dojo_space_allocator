@@ -3,7 +3,7 @@
 This example uses docopt with the built in cmd module to demonstrate an
 interactive command application.
 Usage:
-    app create_room <room_type> <room_name> ...
+    app create_room <room_type> <room_names> ...
     app add_room <person_name> <FELLOW/STAFF> [wants_accommodation]
     app [-i | --interactive]
     app
@@ -14,12 +14,9 @@ Options:
 """
 
 #import modules
-import os, sys
-modelsdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir + '/dojo_space_allocator/models'))
-sys.path.append(modelsdir)
+import sys
 
-from person import Person
-from room import Room
+from models.dojo import Dojo
 
 
 import cmd
@@ -67,14 +64,15 @@ class MyInteractive (cmd.Cmd):
     #use decorators to define the functions
     @docopt_cmd
     def do_create_room(self, arg):
-        """Usage: create_room <room_type> <room_name>"""
-
-        print(arg)
+        """Usage: create_room <room_type> <room_names>..."""
+        dojo = Dojo()
+        dojo.create_room(arg['<room_type>'], arg['<room_names>'])
+        print ("end ...")
 
     @docopt_cmd
     def do_add_person(self, arg):
         """Usage: add_person <person_name> <FELLOW/STAFF>
-        [wants_accommodation]
+        [<wants_accommodation>]
         """
 
         print(arg)
