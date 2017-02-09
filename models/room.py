@@ -11,7 +11,7 @@ class Room(object):
 			if(room_type.lower()=="office"):
 				#make each an instance of the Office class for each room_name
 				for room_name in room_names:
-					name = Office(room_name)
+					room_name = Office(room_name)
 					print (room_name.arg)
 			else:
 				for room_name in room_names:
