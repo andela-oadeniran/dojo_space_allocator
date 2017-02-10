@@ -1,3 +1,8 @@
 #The virtual environment
 dojoenv
 __pycache__
+
+dojo_space_allocator.sublime-project 
+dojo_space_allocator.sublime-workspace 
+models/dojo.sublime-workspace
+room.txt

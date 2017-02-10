@@ -20,7 +20,9 @@ class TestCreateRoom(unittest.TestCase):
         self.assertTrue(blue_office)
         new_room_count = len(my_class_instance.all_rooms)
         self.assertEqual(new_room_count - initial_room_count, 1)
-    # def test_create
+    def test_create_room_is_only_office_living:
+    	new_class = Room()
+
 
 
 

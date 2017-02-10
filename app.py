@@ -4,7 +4,7 @@ This example uses docopt with the built in cmd module to demonstrate an
 interactive command application.
 Usage:
     app create_room <room_type> <room_names> ...
-    app add_room <person_name> <FELLOW/STAFF> [wants_accommodation]
+    app add_room <fname> <lname> <person_type> [wants_accommodation]
     app [-i | --interactive]
     app
     app (-h | --help | --version)
@@ -65,18 +65,24 @@ class MyInteractive (cmd.Cmd):
     @docopt_cmd
     def do_create_room(self, arg):
         """Usage: create_room <room_type> <room_names>..."""
-        dojo = Dojo()
-        dojo.create_room(arg['<room_type>'], arg['<room_names>'])
-        print ("end ...")
+        try:
+            Dojo().create_room(arg.get('<room_type>'), arg.get('<room_names>'))
+            print ('end ...')
+        except ValueError:
+            print('Not a valid room_type')
+        except:
+            print('Not a valid usage')
 
     @docopt_cmd
     def do_add_person(self, arg):
-        """Usage: add_person <person_name> <FELLOW/STAFF>
+        """Usage: add_person <fname> <lname> <person_type>
         [<wants_accommodation>]
         """
-
-        print(arg)
-
+        try:
+            Dojo().add_person(arg.get('<fname>'), arg.get('<lname>'), arg.get('<person_type>'), arg.get('<wants_accommodation>')  )
+            print('end...')
+        except ValueError:
+            print ('Not a valid person_type. person_type can only be Fellow or Staff')
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
 
