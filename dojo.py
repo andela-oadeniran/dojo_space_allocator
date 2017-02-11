@@ -3,11 +3,11 @@
 This example uses docopt with the built in cmd module to demonstrate an
 interactive command application.
 Usage:
-    app create_room <room_type> <room_names> ...
-    app add_room <fname> <lname> <person_type> [wants_accommodation]
-    app [-i | --interactive]
-    app
-    app (-h | --help | --version)
+    dojo create_room <room_type> <room_names> ...
+    dojo add_room (<fname> <lname> <FELLOW/STAFF> [<wants_accommodation>])
+    dojo [-i | --interactive]
+    dojo
+    dojo (-h | --help | --version)
 Options:
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.
@@ -23,8 +23,10 @@ sys.path.append(dbdir)
 sys.path.append(modelsdir)
 
 from db.db import Db
+from models.room import Room
 from models.office import Office
 from models.living import LivingSpace
+from models.person import Person
 from models.staff import Staff
 from models.fellow import Fellow
 
@@ -35,37 +37,48 @@ from docopt import docopt, DocoptExit
 
 
 # The Dojo class contains the application logic and direct interaction
-#with commands
-#
 class Dojo():
-	"""The class serves as the project's controller"""
-	def __init__(self):
-		#create class variables
-		db = Db()
+    """ The Dojo class Docstring"""
+    def __init__(self):
+        pass
+
+    def create_room(self, room_type, room_names):
+        valid_rooms = ['office','living']
+        if room_type.lower()== valid_rooms[0]:
+            for index, room_name in enumerate(room_names):
+                create_office(room_name)
+        elif room_type.lower() == valid_rooms[1]:
+            for index, room_name in enumerate(room_names):
+                create_living_space(room_name)
+        else:
+            raise TypeError
+    def add_person(self, fname, lname, person_type, wants_accommodation):
+        valid_persons = ['fellow', 'staff']
+        if (person_type.lower() == valid_persons[0]) and (wants_accommodation.lower() == 'y' or wants_accommodation== 'yes'):
+            fellow_name = '{0} {1}'.format(fname, lname)
+            create_person(fellow_name, 'fellow', 'y')
+            # add_person_to_office(person_name)
+            # add_person_to_living(person_name)
 
 
-	#methods that interact with Room, Office and LivingSpace classes
-	def create_room(self, room_type, room_names):
-		# parse this and make an instance of room for each case
-		# check to see whether room type is valid
-		valid = ['office', 'living']
-		if (room_type.lower() == valid[0]):
-			for room_name in room_names:
-				# call the create_office function
-				create_office(room_name)
-
-		elif (room_type.lower()== valid[1]):
-			for room_name in room_names:
-				#call appropriate function
-				create_living_space(room_name)
-		else:
-			raise ValueError('Not a valid room_type')
-
-	#methods interacting with the Person, Fellow and Staff classes
-	def add_person(self, fname, lname, )
+        elif person_type.lower()==valid_persons[0]:
+            fellow_name = '{0} {1}'.format(fname, lname)
+            create_person(fellow_name, valid_persons[0], wants_accommodation)
+            # add_person_to_office(person_name)
 
 
-# functions interacting with Room, Office and LivingSpace classes
+        elif person_type.lower() == valid_persons[1]:
+            person_name = '{0} {1}'.format(fname, lname)
+            create_person(person_name, valid_persons[1], wants_accommodation)
+            # add_person_to_office(person_name)
+        else:
+            raise TypeError
+
+
+
+office_arr = []
+living_arr = []
+room_state = {'living':living_arr, 'office':office_arr}
 
 def create_office(office_name):
 	office_name = Office(office_name)
@@ -73,8 +86,29 @@ def create_office(office_name):
 	# room_state['office'].append(self.office_name.room_name)
 	# print("An office called "+ room_state['office'][0]+(" has been successfully created"))
 
-def create_living_space(self, living_name):
+def create_living_space(living_name):
 	living_name = LivingSpace(living_name)
+
+def create_person(person_name, person_type, wants_accommodation):
+
+    if person_type == 'fellow' and wants_accommodation =='y':
+        person_name = Fellow(person_name, 'y')
+        print(" wants accommodation")
+
+    elif person_type == 'fellow' and wants_accommodation=='n':
+        person_name = Fellow(person_name)
+        print(' doesn\'t want an accommodation and specified properly ')
+    elif person_type == 'fellow' and wants_accommodation!='n':
+        person_name = Fellow(person_name)
+        print(' not added to living Space valid argument is "y" or "yes"')
+    elif person_type == 'staff' and wants_accommodation=='n':
+        person_name = Staff(person_name)
+        print("staff added with the appropriate argument for wants_accommodation")
+
+    else:
+        person_name = Staff(person_name)
+        print("Living rooms are only available for fellows ")
+
 
 
 
@@ -127,21 +161,27 @@ class MyInteractive (cmd.Cmd):
         try:
             Dojo().create_room(arg.get('<room_type>'), arg.get('<room_names>'))
             print ('end ...')
-        except ValueError:
-            print('Not a valid room_type')
+        except TypeError:
+            print ('Not a valid room type try "living or office".')
         except:
             print('Not a valid usage')
 
     @docopt_cmd
     def do_add_person(self, arg):
-        """Usage: add_person <fname> <lname> <person_type>
-        [<wants_accommodation>]
+        """Usage: add_person (<fname> <lname> <FELLOW/STAFF> [<wants_accommodation>])
         """
         try:
-            Dojo().add_person(arg.get('<fname>'), arg.get('<lname>'), arg.get('<person_type>'), arg.get('<wants_accommodation>')  )
-            print('end...')
-        except ValueError:
-            print ('Not a valid person_type. person_type can only be Fellow or Staff')
+            if(arg.get('<wants_accommodation>')):
+                Dojo().add_person(arg.get('<fname>'), arg.get('<lname>'), arg.get('<FELLOW/STAFF>'), arg.get('<wants_accommodation>','n')  )
+                print('end valid wants_accommodation...')
+            else:
+                print (arg)
+                Dojo().add_person(arg.get('<fname>'), arg.get('<lname>'), arg.get('<FELLOW/STAFF>'), 'n')
+                print('end None for want_accommodation...')
+        except TypeError:
+            print ('<FELLOW/STAFF> type person can only be a Fellow or Staff')
+        except:
+            print('Not a valid usage')
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
 

@@ -2,5 +2,8 @@ from person import Person
 
 class Staff(Person):
 	"""docstring for Staff"""
-	def __init__(self, fname, lname,person_type='staff'):
-		super(Staff, self).__init__(fname=fname, lname= lname,person_type=person_type)
+	def __init__(self, staff_name):
+		super(Staff, self).__init__(person_name=staff_name,person_type='staff')
+
+new_staff = Staff("ladi adeniran")
+print (new_staff.person_name)
