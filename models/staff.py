@@ -5,5 +5,4 @@ class Staff(Person):
 	def __init__(self, staff_name):
 		super(Staff, self).__init__(person_name=staff_name,person_type='staff')
 
-new_staff = Staff("ladi adeniran")
-print (new_staff.person_name)
+

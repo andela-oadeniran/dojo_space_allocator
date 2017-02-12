@@ -8,4 +8,3 @@ class Office(Room):
 		self.maxoccupant = 6
 		#length not more than 6
 		#can have member staff and fellow
-

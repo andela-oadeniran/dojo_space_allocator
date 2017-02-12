@@ -7,3 +7,4 @@ class LivingSpace(Room):
 		self.maxoccupant = 4
 		# length not more than 4
 		# can only have fellows
+
