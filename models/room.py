@@ -16,14 +16,5 @@ class Room(object):
 if '__name__' == '__main__':
     unittest.main()
 
-new_room = Room('living', 'orange')
-new_room.room_occupants.append('ladi adeniran')
-print(new_room.room_occupants)
-new_room.add_room_size()
-print(new_room.room_size)
 
-new_room.room_occupants.append('ladi adeniran')
-print(new_room.room_occupants)
-
-print(new_room.room_size)
 
