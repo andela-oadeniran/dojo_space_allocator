@@ -1,17 +1,4 @@
-#!/bin/env python
-"""
-This example uses docopt with the built in cmd module to demonstrate an
-interactive command application.
-Usage:
-    dojo create_room <room_type> <room_names> ...
-    dojo add_room (<fname> <lname> <FELLOW/STAFF> [<wants_accommodation>])
-    dojo [-i | --interactive]
-    dojo
-    dojo (-h | --help | --version)
-Options:
-    -i, --interactive  Interactive Mode
-    -h, --help  Show this screen and exit.
-"""
+
 
 #import modules and the models and db directory to the app's entry.
 
@@ -31,54 +18,58 @@ from models.staff import Staff
 from models.fellow import Fellow
 
 
-import cmd
-from docopt import docopt, DocoptExit
 
-app_session = {'room':[], 'person':[]}
+
 
 
 
 # The Dojo class contains the application logic and direct interaction
 class Dojo():
     """ The Dojo class Docstring"""
+    app_session = {'room':[], 'person':[]}
+
     def __init__(self):
         pass
 
     def create_room(self, room_type, room_names):
-        valid_rooms = ['office','living']
+        valid_rooms = ('office','living')
+        rooms = []
         if room_type.lower()== valid_rooms[0]:
             for index, room_name in enumerate(room_names):
-                room_data = {}
-                if not (check_unique_name(room_name, 'room')):
-                    key_name = room_name
-                    room_name = create_room(room_name, 'office')
-                    print(room_name.room_name)
-                    room_data['room_name'] = room_name.room_name
-                    room_data['room_type'] = room_name.room_type
-                    room_data['room_occupants'] = room_name.room_occupants
-                    room_data['max_occupants'] = room_name.maxoccupant
-                    room_data['room_size'] = room_name.add_room_size()
-                    app_session['room'].append(room_data)
-                    print(app_session['room'])
+                #room_data = {}
+                if not (room_exists(room_name, 'room')):
+                    room = Room('office', room_name)
+                    # key_name = room_name
+                    # room_name = create_room(room_name, 'office')
+                    # print(room_name.room_name)
+                    # room_data['room_name'] = room_name.room_name
+                    # room_data['room_type'] = room_name.room_type
+                    # room_data['room_occupants'] = room_name.room_occupants
+                    # room_data['max_occupants'] = room_name.maxoccupant
+                    # room_data['room_size'] = room_name.add_room_size()
+                    Dojo.app_session['room'].append(room)
+                    print(Dojo.app_session['room'])
                     print("office room was created")
+                    rooms.append(room)
                 else:
                     print('room already exists can you name it something else')
 
-            print (app_session)
         elif room_type.lower() == valid_rooms[1]:
             for index, room_name in enumerate(room_names):
                 room_data = {}
-                if not (check_unique_name(room_name, 'room')):
-                    key_name = room_name
-                    room_name = create_room(room_name, 'living')
-                    print(room_name.room_name)
-                    room_data['room_name'] = room_name.room_name
-                    room_data['room_type'] = room_name.room_type
-                    room_data['room_occupants'] = room_name.room_occupants
-                    room_data['max_occupants'] = room_name.maxoccupant
-                    room_data['room_size'] = room_name.add_room_size()
-                    app_session['room'].append(room_data)
-                    print(app_session['room'])
+                if not (room_exists(room_name, 'room')):
+                    room = Room('living', room_name)
+                    # key_name = room_name
+                    # room_name = create_room(room_name, 'living')
+                    # print(room_name.room_name)
+                    # room_data['room_name'] = room_name.room_name
+                    # room_data['room_type'] = room_name.room_type
+                    # room_data['room_occupants'] = room_name.room_occupants
+                    # room_data['max_occupants'] = room_name.maxoccupant
+                    # room_data['room_size'] = room_name.add_room_size()
+                    Dojo.app_session['room'].append(room)
+                    rooms.append(room)
+                    print(Dojo.app_session['room'])
                     print("living room was created")
                 else:
                     print('room already exists can you name it something else')
@@ -86,6 +77,7 @@ class Dojo():
 
         else:
             raise TypeError
+        return rooms
 
     def add_person(self, fname, lname, person_type, wants_accommodation='n'):
         valid_persons = ['fellow', 'staff']
@@ -113,8 +105,8 @@ class Dojo():
                 # person_data['person_room'] = person_name.person_room
                 #get room you want to add the person too from db / datastructure the details are stored
                 # print(person_name)
-                app_session['person'].append(person_data)
-                print(app_session['person'])
+                Dojo.app_session['person'].append(person_data)
+                print(Dojo.app_session['person'])
                 print("added staff")
                 room_name = add_person_to_room(key_name, 'n')
                 #
@@ -140,22 +132,26 @@ class Dojo():
 
 
 #function to check if a room name already exists
-def check_unique_name(name, app_session_key):
-    app_session_room_or_person_name_arr = []
-    if app_session_key == 'room':
-        for index, value in enumerate(app_session['room']):
-            app_session_room_or_person_name_arr.append(value['room_name'])
-            if (name in app_session_room_or_person_name_arr):
-                return True
-            else:
-                return False
-    else:
-        for index, value in enumerate(app_session['person']):
-            app_session_room_or_person_name_arr.append(value['person_name'])
-            if (name in app_session_room_or_person_name_arr):
-                return True
-            else:
-                return False
+def room_exists(name, app_session_key):
+    return any([room.room_name.lower() == name.lower() \
+        for room in Dojo.app_session['room']])
+
+
+    # app_session_room_or_person_name_arr = []
+    # if app_session_key == 'room':
+    #     for index, value in enumerate(Dojo.app_session['room']):
+    #         app_session_room_or_person_name_arr.append(value['room_name'])
+    #         if (name in app_session_room_or_person_name_arr):
+    #             return True
+    #         else:
+    #             return False
+    # else:
+    #     for index, value in enumerate(Dojo.app_session['person']):
+    #         app_session_room_or_person_name_arr.append(value['person_name'])
+    #         if (name in app_session_room_or_person_name_arr):
+    #             return True
+    #         else:
+    #             return False
 
 
 #function to create an instance of the Office or LivingSpace class
@@ -200,11 +196,11 @@ def check_room_full(room_name):
 #function to add a person to a room that is not full
 def add_person_to_room(person_name, wants_accommodation):
     if wants_accommodation == 'n':
-        print(app_session['room'])
+        print(Dojo.app_session['room'])
         #get an office that is not full and then append the person to the occupants
         #add to office to instance of office if not full
         #loop through the offices and add to one that is not full
-        for index, value in enumerate(app_session['room']):
+        for index, value in enumerate(Dojo.app_session['room']):
             print(value)
             if(value['room_size'] < value['max_occupants']):
                 value['room_occupants'].append(person_name)
@@ -220,13 +216,6 @@ def add_person_to_room(person_name, wants_accommodation):
 
 
 
-
-Dojo().create_room('living', ['orange','blue','green'])
-Dojo().add_person('ladi', 'Adeniran', 'staff')
-Dojo().add_person('zeus', 'poisedon', 'staff')
-Dojo().add_person('zeus', 'poedon', 'staff')
-Dojo().add_person('zs', 'poisedon', 'staff')
-Dojo().add_person('zeus', 'poisedon', 'staff')
 
 
 # Dojo().add_person('oladipupo', 'Adeniran', 'staff')
@@ -273,53 +262,3 @@ def docopt_cmd(func):
     fn.__dict__.update(func.__dict__)
     return fn
 
-
-#for interactive shell define the class
-class MyInteractive (cmd.Cmd):
-    intro = 'Welcome to my interactive program!' \
-        + ' (type help for a list of commands.)'
-    prompt = 'dojo>>>'
-    file = None
-
-    #use decorators to define the functions
-    @docopt_cmd
-    def do_create_room(self, arg):
-        """Usage: create_room <room_type> <room_names>..."""
-        try:
-            Dojo().create_room(arg.get('<room_type>'), arg.get('<room_names>'))
-            print ('end ...')
-        except TypeError:
-            print ('Not a valid room type try "living or office".')
-        except:
-            print('Not a valid usage')
-
-    @docopt_cmd
-    def do_add_person(self, arg):
-        """Usage: add_person (<fname> <lname> <FELLOW/STAFF> [<wants_accommodation>])
-        """
-        try:
-            if(arg.get('<wants_accommodation>')):
-                Dojo().add_person(arg.get('<fname>'), arg.get('<lname>'), arg.get('<FELLOW/STAFF>'), arg.get('<wants_accommodation>','n')  )
-                print('end valid wants_accommodation...')
-            else:
-                print (arg)
-                Dojo().add_person(arg.get('<fname>'), arg.get('<lname>'), arg.get('<FELLOW/STAFF>'), 'n')
-                print('end None for want_accommodation...')
-        except TypeError:
-            print ('<FELLOW/STAFF> type person can only be a Fellow or Staff')
-        except:
-            print('Not a valid usage')
-    def do_quit(self, arg):
-        """Quits out of Interactive Mode."""
-
-        print('Good Bye!')
-        exit()
-
-#parse the argument
-opt = docopt(__doc__, sys.argv[1:])
-
-#allow the default for running the app to be interactive
-if opt['Interactive'] or not(opt['Options:']):
-    MyInteractive().cmdloop()
-
-print(opt)
