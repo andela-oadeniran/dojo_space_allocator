@@ -1,4 +1,4 @@
-#!bin/python
+#!/bin/python
 
 import os, sys
 modelsdir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../models'))
@@ -11,18 +11,20 @@ import unittest
 class TestAddPerson(unittest.TestCase):
 	"""The tests cases for the """
 	def test_add_person_fellow(self):
-		new_person = Person("ladi", "FELLOW")
-		self.assertTrue(new_person)
-		self.assertEqual(new_person.name, "ladi")
-		self.assertEqual(new_person.type, "FELLOW")
+		person = Person("Ladi Adeniran", "FELLOW")
+		self.assertTrue(person)
+		self.assertEqual(person.person_name, "Ladi Adeniran")
+		self.assertEqual(person.person_type, "FELLOW")
+
 	def test_add_person_staff(self):
-		new_person = Person("newman", "STAFF")
-		self.assertTrue(new_person)
-		self.assertEqual(new_person.name, "newman")
-		self.assertEqual(new_person.type, "STAFF")
-	def test_person_can_either_be_fellow_staff(self):
-		new_person = Person("zeus", "god")
-		self.assertFalse(new_person)
+		person = Person("Newman Philip", "STAFF")
+		self.assertTrue(person)
+		self.assertEqual(person.person_name, "Newman Philip")
+		self.assertEqual(person.person_type, "STAFF")
+
+	# def test_person_can_either_be_fellow_staff(self):
+	# 	new_person = Person("Koya Adegboyega", "cod")
+	# 	self.assertIsNone(new_person)
 
 
 

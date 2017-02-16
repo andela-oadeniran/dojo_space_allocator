@@ -6,6 +6,7 @@ class Room(object):
 		self.room_name = room_name
 		self.room_type = room_type
 		self.room_occupants = []
+
 	def add_room_size(self):
 		self.room_size = len(self.room_occupants)
 		return self.room_size

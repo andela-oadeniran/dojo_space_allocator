@@ -1,17 +1,4 @@
-#!/bin/env python
-"""
-This example uses docopt with the built in cmd module to demonstrate an
-interactive command application.
-Usage:
-    dojo create_room <room_type> <room_names> ...
-    dojo add_room (<fname> <lname> <FELLOW/STAFF> [<wants_accommodation>])
-    dojo [-i | --interactive]
-    dojo
-    dojo (-h | --help | --version)
-Options:
-    -i, --interactive  Interactive Mode
-    -h, --help  Show this screen and exit.
-"""
+
 
 #import modules and the models and db directory to the app's entry.
 
@@ -31,20 +18,21 @@ from models.staff import Staff
 from models.fellow import Fellow
 
 
-import cmd
-from docopt import docopt, DocoptExit
 
-app_session = {'room':[], 'person':[]}
+
 
 
 
 # The Dojo class contains the application logic and direct interaction
 class Dojo():
     """ The Dojo class Docstring"""
+    app_session = {'room':[], 'person':[]}
+
     def __init__(self):
         pass
 
     def create_room(self, room_type, room_names):
+<<<<<<< HEAD
         valid_rooms = ['office','living']
         if room_type.lower()== 'office':
             for index, room_name in enumerate(room_names):
@@ -74,12 +62,54 @@ class Dojo():
                     room_data['room_size'] = room_name.add_room_size()
                     app_session['room'].append(room_data)
                     print('A LivingSpace called {0} has been successfully created!'.format(room_data['room_name']))
+=======
+        valid_rooms = ('office','living')
+        rooms = []
+        if room_type.lower()== valid_rooms[0]:
+            for index, room_name in enumerate(room_names):
+                #room_data = {}
+                if not (room_exists(room_name, 'room')):
+                    room = Room('office', room_name)
+                    # key_name = room_name
+                    # room_name = create_room(room_name, 'office')
+                    # print(room_name.room_name)
+                    # room_data['room_name'] = room_name.room_name
+                    # room_data['room_type'] = room_name.room_type
+                    # room_data['room_occupants'] = room_name.room_occupants
+                    # room_data['max_occupants'] = room_name.maxoccupant
+                    # room_data['room_size'] = room_name.add_room_size()
+                    Dojo.app_session['room'].append(room)
+                    print(Dojo.app_session['room'])
+                    print("office room was created")
+                    rooms.append(room)
+                else:
+                    print('room already exists can you name it something else')
+
+        elif room_type.lower() == valid_rooms[1]:
+            for index, room_name in enumerate(room_names):
+                room_data = {}
+                if not (room_exists(room_name, 'room')):
+                    room = Room('living', room_name)
+                    # key_name = room_name
+                    # room_name = create_room(room_name, 'living')
+                    # print(room_name.room_name)
+                    # room_data['room_name'] = room_name.room_name
+                    # room_data['room_type'] = room_name.room_type
+                    # room_data['room_occupants'] = room_name.room_occupants
+                    # room_data['max_occupants'] = room_name.maxoccupant
+                    # room_data['room_size'] = room_name.add_room_size()
+                    Dojo.app_session['room'].append(room)
+                    rooms.append(room)
+                    print(Dojo.app_session['room'])
+                    print("living room was created")
+>>>>>>> ladi
                 else:
                     print('{0} already exists can you name it something else'.format(room_name))
 
 
         else:
             raise TypeError
+        return rooms
 
     def add_person(self, fname, lname, person_type, wants_accommodation='n'):
         valid_persons = ['fellow', 'staff']
@@ -168,6 +198,15 @@ class Dojo():
                 person_name = create_person(person_name, 'staff', 'n')
                 person_data['person_name'] = person_name.person_name
                 person_data['person_type'] = person_name.person_type
+<<<<<<< HEAD
+=======
+                # person_data['person_room'] = person_name.person_room
+                #get room you want to add the person too from db / datastructure the details are stored
+                # print(person_name)
+                Dojo.app_session['person'].append(person_data)
+                print(Dojo.app_session['person'])
+                print("added staff")
+>>>>>>> ladi
                 room_name = add_person_to_room(key_name, 'n')
                 person_data['person_office'] = room_name
                 person_data['person_living'] = None
@@ -287,6 +326,7 @@ class Dojo():
 
 
 
+<<<<<<< HEAD
 #function to check if a room name or person name already exists
 def unique_name(name, app_session_key):
     unique_arr = []
@@ -304,6 +344,29 @@ def unique_name(name, app_session_key):
             return False
         else:
             return True
+=======
+#function to check if a room name already exists
+def room_exists(name, app_session_key):
+    return any([room.room_name.lower() == name.lower() \
+        for room in Dojo.app_session['room']])
+
+
+    # app_session_room_or_person_name_arr = []
+    # if app_session_key == 'room':
+    #     for index, value in enumerate(Dojo.app_session['room']):
+    #         app_session_room_or_person_name_arr.append(value['room_name'])
+    #         if (name in app_session_room_or_person_name_arr):
+    #             return True
+    #         else:
+    #             return False
+    # else:
+    #     for index, value in enumerate(Dojo.app_session['person']):
+    #         app_session_room_or_person_name_arr.append(value['person_name'])
+    #         if (name in app_session_room_or_person_name_arr):
+    #             return True
+    #         else:
+    #             return False
+>>>>>>> ladi
 
 
 #function to create an instance of the Office or LivingSpace class
@@ -348,12 +411,18 @@ def create_person(person_name, person_type, wants_accommodation):
 #function to add a person to a room that is not full
 def add_person_to_room(person_name, wants_accommodation):
     if wants_accommodation == 'n':
-        print(app_session['room'])
+        print(Dojo.app_session['room'])
         #get an office that is not full and then append the person to the occupants
         #add to office to instance of office if not full
         #loop through the offices and add to one that is not full
+<<<<<<< HEAD
         for index, value in enumerate(app_session['room']):
             if(value['room_type'] =='office' and (value['room_size'] < value['max_occupants'])):
+=======
+        for index, value in enumerate(Dojo.app_session['room']):
+            print(value)
+            if(value['room_size'] < value['max_occupants']):
+>>>>>>> ladi
                 value['room_occupants'].append(person_name)
                 value['room_size'] += 1
                 print(value['room_occupants'])
@@ -394,7 +463,10 @@ def add_person_to_room(person_name, wants_accommodation):
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ladi
 
 
 
@@ -439,6 +511,7 @@ def docopt_cmd(func):
     fn.__dict__.update(func.__dict__)
     return fn
 
+<<<<<<< HEAD
 
 #for interactive shell define the class
 class MyInteractive (cmd.Cmd):
@@ -492,3 +565,5 @@ if opt['Interactive'] or not(opt['Options:']):
     MyInteractive().cmdloop()
 
 print(opt)
+=======
+>>>>>>> ladi
