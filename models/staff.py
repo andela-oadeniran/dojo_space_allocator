@@ -2,7 +2,7 @@ from person import Person
 
 class Staff(Person):
 	"""docstring for Staff"""
-	def __init__(self, staff_name):
-		super(Staff, self).__init__(person_name=staff_name,person_type='staff')
+	def __init__(self, fname, lname):
+		super(Staff, self).__init__(fname=fname, lname=lname, role='staff')
 
 

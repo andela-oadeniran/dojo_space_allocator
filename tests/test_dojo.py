@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 import os, sys
 dojodir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
@@ -7,6 +7,24 @@ sys.path.append(dojodir)
 from dojo import Dojo
 
 import unittest
+
+class TestCreateRoom(unittest.TestCase):
+    """Write Docstring here """
+    def test_created_office_successfully(self):
+    	# dojo = Dojo()
+    	# room = dojo.create_room(self, 'office', ['Blue'])
+        initial_room_count = len(new_class.all_rooms)
+        # blue_office = Room.create_room("Blue", "office")
+        self.assertTrue(room)
+        self.assertEqual(room.room_name, 'Blue')
+        self.assertEqual(room.room_type, 'Office')
+
+        # new_room_count = len(my_class_instance.all_rooms)
+        # self.assertEqual(new_room_count - initial_room_count, 1)
+
+    # def test_create_room_is_only_office_living:
+    # 	new_class = Room()
+
 
 class TestAddPerson(unittest.TestCase):
 	"""The tests cases for the  Dojo Class"""

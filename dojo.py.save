@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 #import modules and the models and db directory to the app's entry.
 
@@ -61,6 +61,7 @@ class Dojo():
                     room_data['room_size'] = room_name.add_room_size()
                     app_session['room'].append(room_data)
                     print('A LivingSpace called {0} has been successfully created!'.format(room_data['room_name']))
+=======
         valid_rooms = ('office','living')
         rooms = []
         if room_type.lower()== valid_rooms[0]:
@@ -100,6 +101,7 @@ class Dojo():
                     rooms.append(room)
                     print(Dojo.app_session['room'])
                     print("living room was created")
+>>>>>>> ladi
                 else:
                     print('{0} already exists can you name it something else'.format(room_name))
 
@@ -195,12 +197,15 @@ class Dojo():
                 person_name = create_person(person_name, 'staff', 'n')
                 person_data['person_name'] = person_name.person_name
                 person_data['person_type'] = person_name.person_type
+<<<<<<< HEAD
+=======
                 # person_data['person_room'] = person_name.person_room
                 #get room you want to add the person too from db / datastructure the details are stored
                 # print(person_name)
                 Dojo.app_session['person'].append(person_data)
                 print(Dojo.app_session['person'])
                 print("added staff")
+>>>>>>> ladi
                 room_name = add_person_to_room(key_name, 'n')
                 person_data['person_office'] = room_name
                 person_data['person_living'] = None
@@ -320,7 +325,7 @@ class Dojo():
 
 
 
-
+<<<<<<< HEAD
 #function to check if a room name or person name already exists
 def unique_name(name, app_session_key):
     unique_arr = []
@@ -338,6 +343,7 @@ def unique_name(name, app_session_key):
             return False
         else:
             return True
+=======
 #function to check if a room name already exists
 def room_exists(name, app_session_key):
     return any([room.room_name.lower() == name.lower() \
@@ -359,7 +365,7 @@ def room_exists(name, app_session_key):
     #             return True
     #         else:
     #             return False
-
+>>>>>>> ladi
 
 
 #function to create an instance of the Office or LivingSpace class
@@ -408,11 +414,14 @@ def add_person_to_room(person_name, wants_accommodation):
         #get an office that is not full and then append the person to the occupants
         #add to office to instance of office if not full
         #loop through the offices and add to one that is not full
-
+<<<<<<< HEAD
+        for index, value in enumerate(app_session['room']):
+            if(value['room_type'] =='office' and (value['room_size'] < value['max_occupants'])):
+=======
         for index, value in enumerate(Dojo.app_session['room']):
             print(value)
             if(value['room_size'] < value['max_occupants']):
-
+>>>>>>> ladi
                 value['room_occupants'].append(person_name)
                 value['room_size'] += 1
                 print(value['room_occupants'])
@@ -453,7 +462,10 @@ def add_person_to_room(person_name, wants_accommodation):
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ladi
 
 
 
@@ -498,7 +510,59 @@ def docopt_cmd(func):
     fn.__dict__.update(func.__dict__)
     return fn
 
+<<<<<<< HEAD
 
+#for interactive shell define the class
+class MyInteractive (cmd.Cmd):
+    intro = 'Welcome to my interactive program!' \
+        + ' (type help for a list of commands.)'
+    prompt = 'dojo>>>'
+    file = None
 
+    #use decorators to define the functions
+    @docopt_cmd
+    def do_create_room(self, arg):
+        """Usage: create_room <room_type> <room_names>..."""
+        try:
+            Dojo().create_room(arg.get('<room_type>'), arg.get('<room_names>'))
+            print ('end ...')
+        except TypeError:
+            print ('Not a valid room type try "living or office".')
+        except:
+            print('Not a valid usage')
 
+    @docopt_cmd
+    def do_add_person(self, arg):
+        """Usage: add_person (<fname> <lname> <FELLOW/STAFF> [<wants_accommodation>])
+        """
+        try:
+            if(arg.get('<wants_accommodation>')):
+                Dojo().add_person(arg.get('<fname>'), arg.get('<lname>'), arg.get('<FELLOW/STAFF>'), arg.get('<wants_accommodation>','n')  )
+                print('end valid wants_accommodation...')
+            else:
+                print (arg)
+                Dojo().add_person(arg.get('<fname>'), arg.get('<lname>'), arg.get('<FELLOW/STAFF>'), 'n')
+                print('end None for want_accommodation...')
+        except TypeError:
+            print ('<FELLOW/STAFF> type person can only be a Fellow or Staff')
+        except:
+            print('Not a valid usage')
+    # def do_print_room(self, arg):
+    #     """Usa
+    #     """
+    def do_quit(self, arg):
+        """Quits out of Interactive Mode."""
 
+        print('Good Bye!')
+        exit()
+
+#parse the argument
+opt = docopt(__doc__, sys.argv[1:])
+
+#allow the default for running the app to be interactive
+if opt['Interactive'] or not(opt['Options:']):
+    MyInteractive().cmdloop()
+
+print(opt)
+=======
+>>>>>>> ladi
