@@ -21,7 +21,7 @@ class TestRoomClass(unittest.TestCase):
     def test_created_room_successfully(self):
         new_room = Room(name='Blue', purpose='meeting room')
         self.assertTrue(new_room, msg='A new room was created')
-        self.assertIsInstance(new_room, Room, msg='BLue is an instance of the Room Class')
+        self.assertIsInstance(new_room, Room, msg='Blue is an instance of the Room Class')
         self.assertEqual(new_room.name, 'Blue')
         self.assertEqual(new_room.purpose, 'meeting room')
         self.assertEqual(len(new_room.occupants), new_room.size)
@@ -47,7 +47,7 @@ class TestLivingSpaceClass(unittest.TestCase):
         new_living_space = LivingSpace('Orion')
         self.assertEqual(new_living_space.name, 'Orion')
         self.assertNotEqual(new_living_space.name, 'Blue')
-        self.assertEqual(new_living_space.purpose, 'living_space')
+        self.assertEqual(new_living_space.purpose, 'living')
         self.assertIsInstance(new_living_space, Room, msg="The Room class is a super class of the LivingSpace")
         self.assertNotIsInstance(new_living_space, Office, msg='livingSpace doesn\'t inherit from Office ')
         self.assertEqual(len(new_living_space.occupants), new_living_space.size)
