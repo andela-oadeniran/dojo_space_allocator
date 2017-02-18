@@ -1,5 +1,6 @@
-from room import Room
+#!/usr/bin/env python
 
+from room import Room
 
 class Office(Room):
 	"""docstring for Office"""
@@ -8,3 +9,8 @@ class Office(Room):
 		self.max_size = 6
 		#length not more than 6
 		#can have member staff and fellow
+
+
+if '__name__' == '__main__':
+    unittest.main()
+

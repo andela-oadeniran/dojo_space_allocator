@@ -4,9 +4,12 @@ import os, sys
 dojodir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
 sys.path.append(dojodir)
 
+
 from dojo import Dojo
 from models.fellow import Fellow
 from models.staff import Staff
+from models.living import LivingSpace
+from models.office import Office
 
 import unittest
 
@@ -79,7 +82,17 @@ class TestAddPerson(unittest.TestCase):
     	self.assertEqual(new_fellow.wants_accommodation, 'y')
 
 
-#     	# self.assertFalse(new_staff.living_space.name)
+
+    def test_added_person_to_room_successfully(self):
+    	dojo = Dojo()
+    	bayern_office =  dojo.create_room('office',['Bayern'])
+    	zeus_living_space = dojo.create_room('living', ['Zeus'])
+    	new_fellow = dojo.add_person('ladi', 'Adeniran', 'fellow', 'y')
+    	self.assertEqual(new_fellow.office, 'Bayern')
+    	self.assertEqual(new_fellow.living_space, 'Zeus')
+
+
+
 
 
 

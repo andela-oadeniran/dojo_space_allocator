@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+import os,sys
+
+
 from room import Room
 
 class LivingSpace(Room):
