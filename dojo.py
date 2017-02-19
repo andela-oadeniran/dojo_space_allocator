@@ -256,7 +256,15 @@ class Dojo(object):
             print ('Invalid Person Id or Room name')
 
     def load_people(self):
-        pass
+        file = open('people.txt')
+
+        for line in file.readlines():
+            values = line.split()
+            if len(values) == 3:
+                self.add_person(values[0], values[1], values[2])
+            else:
+                self.add_person(values[0],values[1], values[2], values[3])
+        file.close()
 
     def save_state(self):
         pass
@@ -326,3 +334,5 @@ def check_room_size(room):
 # dojo.print_allocations()
 # dojo.print_room('Blue')
 # dojo.print_room('Green')
+dojo = Dojo()
+dojo.load_people()
