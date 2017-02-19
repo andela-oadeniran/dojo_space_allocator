@@ -10,6 +10,7 @@ Usage:
     app.py print_room <room_name>
     app.py print_allocations [-o=<filename>]
     app.py print_unallocates [-o=<filename>]
+    app.py people_id
     app.py reallocate_person <person_identifier> <new_room_name>
     app.py load_people
     app.py save_state [--db=<sqlite_database>]
@@ -61,7 +62,7 @@ def docopt_cmd(func):
 class MyInteractive (cmd.Cmd):
     intro = 'Welcome to my interactive program!' \
         + ' (type help for a list of commands.)'
-    prompt = 'dojo>>> '
+    prompt = 'dojo>>>'
     file = None
 
     @docopt_cmd
@@ -95,6 +96,10 @@ Options:
     -o=<filename> Textfile [Default: persons.txt]
         """
         pass
+    @docopt_cmd
+    def do_people_id (self, arg):
+        """Usage: people_id
+        """
     @docopt_cmd
     def do_reallocate_person(self, arg):
         """Usage: reallocate_person <person_identifier> <new_room_name>

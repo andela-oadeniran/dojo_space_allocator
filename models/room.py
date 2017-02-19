@@ -11,7 +11,7 @@ class Room(object):
 		self.purpose = purpose
 		self.occupants = []
 	def __repr__(self):
-		return 'Room {}'.format(self.name)
+		return '{}'.format(self.name)
 
 if '__name__' == '__main__':
     unittest.main()
