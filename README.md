@@ -1,4 +1,5 @@
 [![Coverage Status](https://coveralls.io/repos/github/andela-oadeniran/dojo_space_allocator/badge.svg)](https://coveralls.io/github/andela-oadeniran/dojo_space_allocator)
+[![Build Status](https://travis-ci.org/andela-oadeniran/dojo_space_allocator.svg?branch=master)](https://travis-ci.org/andela-oadeniran/dojo_space_allocator)
 
 # dojo_space_allocator
 ###A Console Application that helps allocate an office space, room space or both.
