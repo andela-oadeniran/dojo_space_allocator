@@ -87,7 +87,7 @@ class Dojo(object):
                         if (room.purpose == 'office') and (check_room_size(room)):
                             fellow_name.office = add_person_to_room(
                                 fellow_name, room)
-                            print(fellow_name.office)
+                            print('{0} has been allocated the Office {1}'.format(fname, fellow_name.office))
                             break
                     else:
                         print('I guess we need more Offices')
@@ -97,6 +97,7 @@ class Dojo(object):
                             if check_room_size(room):
                                 fellow_name.office = add_person_to_room(
                                     fellow_name, room)
+                                print('{0} has been allocated the Office {1}'.format(fname, fellow_name.office))
                                 break
 
                     else:
@@ -106,6 +107,7 @@ class Dojo(object):
                             if check_room_size(room):
                                 fellow_name.living_space = add_person_to_room(
                                     fellow_name, room)
+                                print('{0} has been allocated the living space {1}'.format(fname, fellow_name.office))
                                 break
                     else:
                         print(
@@ -125,11 +127,15 @@ class Dojo(object):
                 person_name = "{0} {1}".format(fname, lname)
                 staff_name = person_name
                 staff_name = Staff(fname, lname)
+                print('Staff {0} has been successfully added.'.format(
+                    person_name))
+
 
                 for index, room in enumerate(Dojo.all_rooms):
                     if (room.purpose == 'office') and (check_room_size(room)):
                         staff_name.office = add_person_to_room(
                             staff_name, room)
+                        print('{0} has been allocated the office {1}'.format(staff_name.fname, room.name))
                         break
 
                     else:
@@ -142,8 +148,6 @@ class Dojo(object):
                 # Dojo.app_session['person'].append(person_key)
                 # print (Dojo.app_session['person'])
                 # print (Dojo.people_keys)
-                print('Staff {0} has been successfully added.'.format(
-                    person_name))
 
         else:
             print('You can only add fellows and staff\n')
@@ -155,10 +159,12 @@ class Dojo(object):
                     if room.occupants:
                         print(room.occupants)
                         # return room.occupants
+                        break
                     else:
                         print("This room has no occupants yet.\n")
+                        break
             else:
-                print ('{0} not found\n'.format(room_name))
+                print ('{} not in Dojo'.format())
         else:
             print('No room in Dojo yet.')
 
@@ -182,7 +188,6 @@ class Dojo(object):
             else:
                 for index, room in enumerate(Dojo.all_rooms):
                     if (room.occupants):
-                        print("got here")
                         members = ', '.join(str(person).upper()
                                             for person in room.occupants)
                         text = '{0}\n------------------------------------\n{1}\n\n'.format(
@@ -190,8 +195,9 @@ class Dojo(object):
                         file = open(to_file, 'a')
                         file.write(text)
                         file.close()
+                        print('Successfully written the Allocations to {0}'.format(to_file))
                     else:
-                        text = '{0} \n -------------------------- \n {0} is empty\n\n'.format(
+                        text = '{0}\n -------------------------- \n {0} is empty\n\n'.format(
                             room.name.upper())
         else:
             print('There are no rooms in Dojo yet\n')
@@ -237,16 +243,20 @@ class Dojo(object):
                     if person.office:
                         delete_person_from_room(person, Dojo.app_session['room'][person.office])
                         person.office = add_person_to_room(person, room)
+                        print('{0} has been allocated the office {1}'.format(person.fname, room.name))
                     else:
                         person.office = add_person_to_room(person, room)
+                        print('{0} has been allocated the office {1}'.format(person.fname, room.name))
                 else:
                     if person.role == 'fellow':
                         if person.wants_accommodation=='y':
                             if person.living_space:
                                 delete_person_from_room(person, Dojo.app_session['room'][person.living_space])
                                 person.living_space = add_person_to_room(person, room)
+                                print('{0} has been allocated the living space {1}'.format(person.fname, room.name))
                             else:
-                                persom.office = add_person_to_room(person, room)
+                                person.living_space = add_person_to_room(person, room)
+                                print('{0} has been allocated the living space {1}'.format(person.fname, room.name))
                     else:
                         print('You cannot add {} a Staff to a living Space.'.format(person.fname))
 
@@ -334,5 +344,5 @@ def check_room_size(room):
 # dojo.print_allocations()
 # dojo.print_room('Blue')
 # dojo.print_room('Green')
-dojo = Dojo()
-dojo.load_people()
+# dojo = Dojo()
+# dojo.load_people()

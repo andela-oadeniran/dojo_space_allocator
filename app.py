@@ -5,11 +5,11 @@ interactive command application.
 
 Usage:
     app.py
-    app.py create_room <room_type> <room_name>...
+    app.py create_room <room_type> <room_names>...
     app.py add_person <fname> <lname> <FELLOW/STAFF> [<wants_accommodation>]
     app.py print_room <room_name>
-    app.py print_allocations [-o=<filename>]
-    app.py print_unallocates [-o=<filename>]
+    app.py print_allocations (-o)
+    app.py print_unallocated [-o=<filename>]
     app.py people_id
     app.py reallocate_person <person_identifier> <new_room_name>
     app.py load_people
@@ -26,6 +26,8 @@ Options:
 import sys
 import cmd
 from docopt import docopt, DocoptExit
+
+from dojo import Dojo
 
 
 def docopt_cmd(func):
@@ -67,39 +69,66 @@ class MyInteractive (cmd.Cmd):
 
     @docopt_cmd
     def do_create_room(self, arg):
-        """Usage: create_room <room_type> <room_name>...
+        """Usage: create_room <room_type> <room_names>...
         """
+        room_purpose = arg.get('<room_type>')
+        room_names = arg.get('<room_names>')
+        Dojo().create_room(room_purpose, room_names)
 
 
     @docopt_cmd
     def do_add_person(self, arg):
         """Usage: add_person <fname> <lname> <FELLOW/STAFF> [<wants_accommodation>]
         """
-        pass
+        fname = arg.get('<fname>')
+        lname = arg.get('<lname>')
+        person_type = arg.get('<FELLOW/STAFF>')
+        wants_accommodation = arg.get('<wants_accommodation>')
+        if fname.isalpha() and lname.isalpha():
+            if person_type == 'staff':
+                Dojo().add_person(fname, lname, 'staff')
+            elif person_type=='fellow':
+                if wants_accommodation != 'y':
+                    Dojo().add_person(fname, lname, 'fellow')
+                else:
+                    Dojo().add_person(fname, lname, 'fellow', 'y')
+            else:
+                print ('Invalid Dojo Occupants are either Fellows or Staff')
+        else:
+            print ('Names can only be string character')
+
+        # Dojo().add_person()
     @docopt_cmd
     def do_print_room(self, arg):
         """Usage: print_room <room_name>
         """
-        pass
+        room_name = arg.get('<room_name>')
+        Dojo().print_room(room_name)
 
     @docopt_cmd
     def do_print_allocations(self, arg):
-        """Usage: print_allocations [-o=<filename>]
-Options:
-    -o=<filename> Textfile [Default: rooms.txt]
+        """Usage: print_allocations [(-o <filename>)]
         """
-        pass
+        filename = arg.get('<filename>')
+        if not(filename):
+            Dojo().print_allocations()
+        else:
+            Dojo().print_allocations(filename)
     @docopt_cmd
     def do_print_unallocated(self, arg):
-        """Usage: print_unallocated [-o=<filename>]
-Options:
-    -o=<filename> Textfile [Default: persons.txt]
+        """Usage: print_unallocated [(-o <filename>)]
         """
-        pass
+        filename  = arg.get('<filename>')
+        if not (filename):
+            Dojo().print_unallocated()
+        else:
+            Dojo().print_unallocated(filename)
     @docopt_cmd
     def do_people_id (self, arg):
         """Usage: people_id
         """
+        Dojo().people_id()
+        pass
     @docopt_cmd
     def do_reallocate_person(self, arg):
         """Usage: reallocate_person <person_identifier> <new_room_name>
@@ -109,7 +138,7 @@ Options:
     def do_load_people(self, arg):
         """Usage: load_people
         """
-        pass
+        Dojo().load_people()
     @docopt_cmd
     def do_save_state(self, arg):
         """Usage: save_state [--db=<sqlite_database>]
