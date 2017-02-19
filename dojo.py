@@ -169,7 +169,6 @@ class Dojo(object):
             print('No room in Dojo yet.')
 
     def print_allocations(self, to_file='n'):
-        print (Dojo.all_rooms)
         if (Dojo.all_rooms):
             if not (to_file.endswith('.txt')):
                 for index, room in enumerate(Dojo.all_rooms):
@@ -197,8 +196,12 @@ class Dojo(object):
                         file.close()
                         print('Successfully written the Allocations to {0}'.format(to_file))
                     else:
-                        text = '{0}\n -------------------------- \n {0} is empty\n\n'.format(
+                        text = '{0}\n--------------------------\n{0} is empty\n\n'.format(
                             room.name.upper())
+                        file = open(to_file, 'a')
+                        file.write(text)
+                        file.close()
+                        print('Room is presently empty')
         else:
             print('There are no rooms in Dojo yet\n')
     def print_unallocated(self, to_file='n'):
@@ -320,7 +323,7 @@ def check_room_size(room):
 # new_staff = dojo.add_person('Oladi', 'Adeni', 'fellow')
 # new_staff = dojo.add_person('Olad', 'Adeniran', 'fellow')
 # new_staff = dojo.add_person('Ola', 'Adeni', 'fellow')
-# dojo.print_allocations()
+# dojo.print_allocations('file.txt')
 # dojo.print_room('')
 # print()
 # dojo.print_room('Blue')

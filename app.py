@@ -8,12 +8,12 @@ Usage:
     app.py create_room <room_type> <room_names>...
     app.py add_person <fname> <lname> <FELLOW/STAFF> [<wants_accommodation>]
     app.py print_room <room_name>
-    app.py print_allocations (-o)
-    app.py print_unallocated [-o=<filename>]
+    app.py print_allocations [(-o <filename>)]
+    app.py print_unallocated [(-o <filename>)]
     app.py people_id
-    app.py reallocate_person <person_identifier> <new_room_name>
+    app.py reallocate_person <person_identifier> <room_name>
     app.py load_people
-    app.py save_state [--db=<sqlite_database>]
+    app.py save_state [(--db sqlite_database)]
     app.py load_state <sqlite_database>
     app.py (-i | --interactive)
     app.py (-h | --help | --version)
@@ -131,9 +131,15 @@ class MyInteractive (cmd.Cmd):
         pass
     @docopt_cmd
     def do_reallocate_person(self, arg):
-        """Usage: reallocate_person <person_identifier> <new_room_name>
+        """Usage: reallocate_person <person_identifier> <room_name>
         """
-        pass
+        person_id = arg.get('<person_identifier>')
+        room_name = arg.get('<room_name>')
+        if person_id.isdigit():
+            person_id = int(person_id)
+            Dojo().reallocate_person(person_id, room_name)
+        else:
+            print ('Person Id can only be an Integer')
     @docopt_cmd
     def do_load_people(self, arg):
         """Usage: load_people
@@ -141,9 +147,9 @@ class MyInteractive (cmd.Cmd):
         Dojo().load_people()
     @docopt_cmd
     def do_save_state(self, arg):
-        """Usage: save_state [--db=<sqlite_database>]
+        """Usage: save_state [(--db <sqlite_database>)]
 Options:
-    --db=<sqlite_database> database [Default: app_session]
+    (--db <sqlite_database>) database [Default: app_session]
         """
         pass
     @docopt_cmd
