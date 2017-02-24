@@ -1,19 +1,14 @@
 #!/usr/bin/env python
 
 
-
-
 class Room(object):
-	"""docstring for Room: The class creates room objects for
-	fellows and staff of Andela at The Dojo"""
-	def __init__(self,purpose, name):
-		self.name = name
-		self.purpose = purpose
-		self.occupants = []
-	def __repr__(self):
-		return '{}'.format(self.name)
+    """docstring for Room: The class creates room objects for
+    fellows and staff of Andela at The Dojo"""
 
-if '__name__' == '__main__':
-    unittest.main()
+    def __init__(self, purpose, name):
+        self.name = name
+        self.purpose = purpose
+        self.occupants = []
 
-
+    def __repr__(self):
+        return '{}'.format(self.name.upper())

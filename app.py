@@ -35,6 +35,7 @@ def docopt_cmd(func):
     This decorator is used to simplify the try/except block and pass the result
     of the docopt parsing to the called action.
     """
+
     def fn(self, arg):
         try:
             opt = docopt(fn.__doc__, arg)
@@ -61,7 +62,7 @@ def docopt_cmd(func):
     return fn
 
 
-class MyInteractive (cmd.Cmd):
+class MyInteractive(cmd.Cmd):
     intro = 'Welcome to my interactive program!' \
         + ' (type help for a list of commands.)'
     prompt = 'dojo>>>'
@@ -75,7 +76,6 @@ class MyInteractive (cmd.Cmd):
         room_names = arg.get('<room_names>')
         Dojo().create_room(room_purpose, room_names)
 
-
     @docopt_cmd
     def do_add_person(self, arg):
         """Usage: add_person <fname> <lname> <FELLOW/STAFF> [<wants_accommodation>]
@@ -87,15 +87,15 @@ class MyInteractive (cmd.Cmd):
         if fname.isalpha() and lname.isalpha():
             if person_type == 'staff':
                 Dojo().add_person(fname, lname, 'staff')
-            elif person_type=='fellow':
-                if wants_accommodation != 'y':
+            elif person_type == 'fellow':
+                if wants_accommodation not in ('y','Y'):
                     Dojo().add_person(fname, lname, 'fellow')
                 else:
                     Dojo().add_person(fname, lname, 'fellow', 'y')
             else:
-                print ('Invalid Dojo Occupants are either Fellows or Staff')
+                print('Invalid!!! Dojo Occupants are either Fellows or Staff')
         else:
-            print ('Names can only be string character')
+            print('Names can only be string character')
 
         # Dojo().add_person()
     @docopt_cmd
@@ -110,25 +110,28 @@ class MyInteractive (cmd.Cmd):
         """Usage: print_allocations [(-o <filename>)]
         """
         filename = arg.get('<filename>')
-        if not(filename):
+        if not (filename):
             Dojo().print_allocations()
         else:
             Dojo().print_allocations(filename)
+
     @docopt_cmd
     def do_print_unallocated(self, arg):
         """Usage: print_unallocated [(-o <filename>)]
         """
-        filename  = arg.get('<filename>')
+        filename = arg.get('<filename>')
         if not (filename):
             Dojo().print_unallocated()
         else:
             Dojo().print_unallocated(filename)
+
     @docopt_cmd
-    def do_people_id (self, arg):
+    def do_people_id(self, arg):
         """Usage: people_id
         """
         Dojo().people_id()
         pass
+
     @docopt_cmd
     def do_reallocate_person(self, arg):
         """Usage: reallocate_person <person_identifier> <room_name>
@@ -139,12 +142,14 @@ class MyInteractive (cmd.Cmd):
             person_id = int(person_id)
             Dojo().reallocate_person(person_id, room_name)
         else:
-            print ('Person Id can only be an Integer')
+            print('Person Id can only be an Integer')
+
     @docopt_cmd
     def do_load_people(self, arg):
         """Usage: load_people
         """
         Dojo().load_people()
+
     @docopt_cmd
     def do_save_state(self, arg):
         """Usage: save_state [(--db <sqlite_database>)]
@@ -152,12 +157,12 @@ Options:
     (--db <sqlite_database>) database [Default: app_session]
         """
         pass
+
     @docopt_cmd
-    def do_load_state (self, arg):
+    def do_load_state(self, arg):
         """Usage: load_state <sqlite_database>
         """
         pass
-
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
@@ -165,11 +170,10 @@ Options:
         print('Good Bye!')
         exit()
 
+
 opt = docopt(__doc__, sys.argv[1:], version=1.0)
 
 if not opt['--interactive'] or opt['--interactive']:
     MyInteractive().cmdloop()
-
-
 
 print(opt)
