@@ -79,7 +79,6 @@ class Dojo(object):
         if role.lower() in ('fellow', 'staff'):
             if role.lower() == 'fellow':
                 person_name = "{0} {1}".format(fname, lname)
-                # fellow_name = person_name
                 fellow = Fellow(fname, lname, wants_accommodation)
                 print('Fellow {0} has been successfully added.'.format(
                     person_name))
@@ -100,7 +99,6 @@ class Dojo(object):
 
             else:
                 person_name = "{0} {1}".format(fname, lname)
-                # staff_name = person_name
                 staff = Staff(fname, lname)
                 print('Staff {0} has been successfully added.'.format(
                     person_name))
@@ -254,7 +252,6 @@ class Dojo(object):
 
 
 # Functions used in the Dojo Class
-#
 
 def add_person_to_room(person, room):
     room.occupants.append(person)
@@ -302,20 +299,3 @@ def append_person_to_session(person):
     person_key = len(Dojo.people)
     Dojo.app_session['person'][person_key] = person
     Dojo.people_keys.append(person_key)
-
-
-dojo = Dojo()
-
-# dojo.create_room('office', ['orange', 'blue'])
-dojo.add_person('Oladipupo','adeniran', 'staff', 'y')
-dojo.add_person('Oladipup','adeniran', 'fellow', 'y')
-#dojo.create_room('office', ['blue'])
-dojo.print_unallocated('allocations.txt')
-# dojo.people_id()
-# dojo.reallocate_person(1, 'blue')
-# dojo.print_allocations()
-# dojo.print_room('orange')
-# dojo.print_allocations()
-# dojo.print_unallocated()
-# # dojo.print_room('orange')
-# dojo.print_allocations()
