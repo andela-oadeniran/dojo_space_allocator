@@ -1,1 +1,4 @@
 #The dojo allocator's requirement
+
+nose
+flake8
