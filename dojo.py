@@ -3,17 +3,21 @@
 # import modules and the models and db directory to the app's entry.
 import os
 import sys
+import random
+import sqlite3
+import pickle
 
 dbdir = os.path.abspath(os.path.join(os.path.dirname(__file__), './db'))
 modelsdir = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), './models'))
+    os.path.join(os.path.dirname(__file__),
+        './models'))
 
 sys.path.append(dbdir)
 sys.path.append(modelsdir)
 
-import random
 
-from db.db import Db
+
+from db.dojodb import DojoDb
 from models.office import Office
 from models.living import LivingSpace
 from models.staff import Staff
@@ -225,7 +229,7 @@ class Dojo(object):
                                     the living space {1}'.
                                     format(person.fname, room.name))
                     else:
-                        print('You cannot add {} a Staff to a living Space.'.
+                        print('You cannot add {}, a Staff to a living Space.'.
                               format(person.fname))
 
             else:
@@ -240,15 +244,54 @@ class Dojo(object):
             values = line.split()
             if len(values) == 3:
                 self.add_person(values[0], values[1], values[2])
-            else:
+            elif len(values) == 4:
                 self.add_person(values[0], values[1], values[2], values[3])
+            else:
+                pass
         file.close()
 
-    def save_state(self):
-        pass
+    def save_state(self, db_name='dojo.db'):
+        rooms_data = []
+        people_data = []
+        db = DojoDb(db_name)
+        if Dojo.all_rooms:
+            for room in Dojo.all_rooms:
+                if room.occupants:
+                    members = ', '.join([str(person) for person in room.occupants])
+                    room_data = (room.name, room.purpose, members, room.max_size)
+                    rooms_data.append(room_data)
+                else:
+                    room_data = (room.name, room.purpose, '', room.max_size)
+                    rooms_data.append(room_data)
+            db.save_rooms_data(rooms_data)
+        if Dojo.people:
+            for index, person in enumerate(Dojo.people):
+                person_name = '{0} {1}'.format(person.fname, person.lname)
+                person_id = index + 1
+                if person.office and person.living_space:
+                    person_room = '{0} {1}'.format(str(person.office, person.living))
+                    person_data = (person_id,person_name, person.role, person_room )
+                    people_data.append(person_data)
+                elif person.office and not person.living_space:
+                    person_data = (person_id, person_name, person.role, person.office)
+                    people_data.append(person_data)
+                elif person.living_space and not person.office:
+                    person_data = (person_id, person_name, person.role, person.living)
+                    people_data.append(person_data)
+                else:
+                    person_data = (person_id, person_name, person.role, '')
+                    people_data.append(person_data)
+            db.save_people_data(people_data)
+        session_data = ( Dojo.app_session, Dojo.all_rooms, Dojo.people)
+        session_state = sqlite3.Binary(pickle.dumps(session_data))
+        db.save_state_data(session_state)
 
-    def load_state(self, db_sql):
-        pass
+    def load_state(self, db_name):
+        db = DojoDb(db_name)
+        app_state_data = db.get_data()
+        session = pickle.loads(app_state_data)
+        # print(session)
+
 
 
 # Functions used in the Dojo Class
@@ -275,8 +318,7 @@ def get_available_room(purpose):
     if available_rooms:
         room = random.choice(available_rooms)
         return room
-    else:
-        return None
+    return None
 
 def allocate_person_to_room(person, room):
     add_person_to_room(person, room)
@@ -297,5 +339,23 @@ def append_room_to_session(room_key, room):
 def append_person_to_session(person):
     Dojo.people.append(person)
     person_key = len(Dojo.people)
+    # person.id = person_key
     Dojo.app_session['person'][person_key] = person
     Dojo.people_keys.append(person_key)
+
+
+
+# dojo = Dojo()
+# dojo.create_room('office', ['Red'])
+# dojo.add_person('ladi', 'adeniran', 'fellow')
+# dojo.add_person('ladipupo','Adeni', 'fellow')
+# print(Dojo.app_session)
+# dojo.save_state()
+# dojo.load_state('dojo.db')
+
+# dojo = Dojo()
+# dojo.create_room('office', ['Blue'])
+# dojo.save_state()
+# dojo.create_room('office', ['Blue'])
+# dojo.save_state()
+# dojo.load_people('dojo.db')
