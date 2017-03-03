@@ -34,7 +34,6 @@ class Dojo(object):
     app_session = {'room': {}, 'person': {}}
     all_rooms = []
     people = []
-    room_keys = []
     people_keys = []
 
     def __init__(self):
@@ -46,14 +45,13 @@ class Dojo(object):
         self.app_session = Dojo.app_session
         self.all_rooms = Dojo.all_rooms
         self.people = Dojo.people
-        self.room_keys = Dojo.room_keys
         self.people_keys = Dojo.people_keys
         if purpose.lower() in ('office', 'living'):
             if purpose.lower() == 'office':
 
-                for index, room_name in enumerate(room_names):
+                for room_name in room_names:
                     if (
-                            room_name.upper() in Dojo.room_keys):
+                            room_name.upper() in Dojo.app_session['room'].keys()):
                         print(
                             'Room name already exists. Use a different name\n')
                     else:
@@ -64,8 +62,8 @@ class Dojo(object):
                             "An Office called {0} has been successfully created!\n".
                             format(room_key.title()))
             else:
-                for index, room_name in enumerate(room_names):
-                    if (room_name.upper() in Dojo.room_keys):
+                for room_name in room_names:
+                    if (room_name.upper() in Dojo.app_session['room'].keys()):
                         print("Room name already exists, Use a different name")
                     else:
                         room_key = room_name.upper()
@@ -82,23 +80,22 @@ class Dojo(object):
     def add_person(self, fname, lname, role, wants_accommodation='n'):
         if role.lower() in ('fellow', 'staff'):
             if role.lower() == 'fellow':
-                person_name = "{0} {1}".format(fname, lname)
                 fellow = Fellow(fname, lname, wants_accommodation)
-                print('Fellow {0} has been successfully added.'.format(
-                    person_name))
+                print('Fellow {0} {1} has been successfully added.'.format(
+                    fname, lname))
                 available_office = get_available_room('office')
                 if available_office:
                     allocate_person_to_room(fellow, available_office)
                 else:
-                    print('You would be allocated an Office as soon as one is Ready.\n')
+                    print('There are currently no Office Spaces in Dojo.'
+                        ' Create Offices and reallocate the Fellow. \n')
                 if wants_accommodation in ('y', 'Y'):
                     available_living = get_available_room('living')
                     if available_living:
                         allocate_person_to_room(fellow, available_living)
                     else:
-                        print('You have been placed on the waiting '
-                              'list, would be assigned a Living room as '
-                              'soon as one is available.\n')
+                        print('There are currently no Living Spaces in Dojo, Create'
+                            'a living Space and reallocate the Fellow to the Room.')
                 append_person_to_session(fellow)
 
             else:
@@ -110,7 +107,9 @@ class Dojo(object):
                 if available_office:
                     allocate_person_to_room(staff, available_office)
                 else:
-                    print ('You will be allocated an Office Space as soon as it is ready.\n')
+                    print('There are currently no Office Spaces in Dojo.'
+                        ' Create Offices and reallocate the Staff member. \n')
+
                 append_person_to_session(staff)
         else:
             print('You can only add fellows and staff\n')
@@ -118,7 +117,7 @@ class Dojo(object):
     def print_room(self, room_name):
         if (Dojo.all_rooms):
             room_key = room_name.upper()
-            if room_key in str(Dojo.all_rooms):
+            if room_key in Dojo.app_session['room'].keys():
                 occupants_object =  Dojo.app_session['room'][room_key].occupants
                 if occupants_object:
                     occupants = [str(occupant).title() for occupant in occupants_object]
@@ -130,7 +129,7 @@ class Dojo(object):
 
     def print_allocations(self, to_file='n'):
         if (Dojo.all_rooms):
-            for index, room in enumerate(Dojo.all_rooms):
+            for room in Dojo.all_rooms:
                 if (room.occupants):
                     members = ', '.join(
                         str(person).title() for person in room.occupants)
@@ -157,7 +156,7 @@ class Dojo(object):
 
     def print_unallocated(self, to_file='n'):
         if (Dojo.people):
-            for index, person in enumerate(Dojo.people):
+            for person in Dojo.people:
                 if not (person.office):
                     if not (to_file.endswith('.txt')):
                         print(
@@ -183,7 +182,7 @@ class Dojo(object):
                             print('{0} needs a Living Space'.format(
                                 str(person).upper()))
         else:
-            print('No person added yet')
+            print('No person allocated to Dojo rooms yet')
 
     def people_id(self):
         print('ID          PERSON              ROLE\n')
@@ -191,106 +190,95 @@ class Dojo(object):
             print('{0}     {1}        {2}'.format(person_key, Dojo.people[index], Dojo.people[index].role.upper()))
 
     def reallocate_person(self, person_id, room_name):
-        print(Dojo.all_rooms)
         if (person_id in Dojo.people_keys) and (room_name.upper() in Dojo.room_keys):
-            room_key = room_name.upper()
-            room = Dojo.app_session['room'][room_key]
-            person = Dojo.app_session['person'][person_id]
-            if (check_room_size(room)):
-                if room.purpose == 'office':
-                    if person.office:
-                        delete_person_from_room(
-                            person, Dojo.app_session['room'][person.office])
-                        person.office = add_person_to_room(person, room)
-                        print('{0} has been allocated the office {1}'.format(
-                            person.fname, room.name))
+            if (Dojo.app_session['person'][person_id].office != room_name.upper()) or (Dojo.app_session['person'][person_id].living_space == room_name.upper()):
+                room_key = room_name.upper()
+                room = Dojo.app_session['room'][room_key]
+                person = Dojo.app_session['person'][person_id]
+                if (check_room_size(room)):
+                    if room.purpose == 'office':
+                        if person.office:
+                            delete_person_from_room(
+                                person, Dojo.app_session['room'][person.office])
+                            person.office = add_person_to_room(person, room)
+                            print('{0} has been allocated the office {1}'.format(
+                                person.fname, room.name))
+                        else:
+                            person.office = add_person_to_room(person, room)
+                            print('{0} has been allocated the office {1}'.format(
+                                person.fname, room.name))
                     else:
-                        person.office = add_person_to_room(person, room)
-                        print('{0} has been allocated the office {1}'.format(
-                            person.fname, room.name))
+                        if person.role == 'fellow':
+                            if person.wants_accommodation == 'y':
+                                if person.living_space:
+                                    delete_person_from_room(
+                                        person, Dojo.app_session['room'][
+                                            person.living_space])
+                                    person.living_space = add_person_to_room(
+                                        person, room)
+                                    print(
+                                        '{0} has been allocated\
+                                        the living space {1}'.
+                                        format(person.fname, room.name))
+                                else:
+                                    person.living_space = add_person_to_room(
+                                        person, room)
+                                    print(
+                                        '{0} has been allocated\
+                                        the living space {1}'.
+                                        format(person.fname, room.name))
+                        else:
+                            print('You cannot add {}, a Staff to a living Space.'.
+                                  format(person.fname))
                 else:
-                    if person.role == 'fellow':
-                        if person.wants_accommodation == 'y':
-                            if person.living_space:
-                                delete_person_from_room(
-                                    person, Dojo.app_session['room'][
-                                        person.living_space])
-                                person.living_space = add_person_to_room(
-                                    person, room)
-                                print(
-                                    '{0} has been allocated\
-                                    the living space {1}'.
-                                    format(person.fname, room.name))
-                            else:
-                                person.living_space = add_person_to_room(
-                                    person, room)
-                                print(
-                                    '{0} has been allocated\
-                                    the living space {1}'.
-                                    format(person.fname, room.name))
-                    else:
-                        print('You cannot add {}, a Staff to a living Space.'.
-                              format(person.fname))
-
+                    print('You cannot Reallocate to a full Room')
             else:
-                print('You cannot Reallocate to a full Room')
+                print("You cannot reallocate a person to his present room")
+
         else:
             print('Invalid Person Id or Room name')
 
-    def load_people(self):
-        file = open('people.txt')
+    def load_people(self, text_file):
+        if text_file.endswith('.txt'):
+            file = open(text_file)
 
-        for line in file.readlines():
-            values = line.split()
-            if len(values) == 3:
-                self.add_person(values[0], values[1], values[2])
-            elif len(values) == 4:
-                self.add_person(values[0], values[1], values[2], values[3])
-            else:
-                pass
-        file.close()
+            for line in file.readlines():
+                values = line.split()
+                if len(values) == 3:
+                    self.add_person(values[0], values[1], values[2])
+                elif len(values) == 4:
+                    self.add_person(values[0], values[1], values[2], values[3])
+                else:
+                    pass
+            file.close()
+        else:
+            print('Invalid text file, can only load people from a text file')
 
     def save_state(self, db_name='dojo.db'):
-        rooms_data = []
-        people_data = []
-        db = DojoDb(db_name)
-        if Dojo.all_rooms:
-            for room in Dojo.all_rooms:
-                if room.occupants:
-                    members = ', '.join([str(person) for person in room.occupants])
-                    room_data = (room.name, room.purpose, members, room.max_size)
-                    rooms_data.append(room_data)
-                else:
-                    room_data = (room.name, room.purpose, '', room.max_size)
-                    rooms_data.append(room_data)
-            db.save_rooms_data(rooms_data)
-        if Dojo.people:
-            for index, person in enumerate(Dojo.people):
-                person_name = '{0} {1}'.format(person.fname, person.lname)
-                person_id = index + 1
-                if person.office and person.living_space:
-                    person_room = '{0} {1}'.format(str(person.office, person.living))
-                    person_data = (person_id,person_name, person.role, person_room )
-                    people_data.append(person_data)
-                elif person.office and not person.living_space:
-                    person_data = (person_id, person_name, person.role, person.office)
-                    people_data.append(person_data)
-                elif person.living_space and not person.office:
-                    person_data = (person_id, person_name, person.role, person.living)
-                    people_data.append(person_data)
-                else:
-                    person_data = (person_id, person_name, person.role, '')
-                    people_data.append(person_data)
-            db.save_people_data(people_data)
-        session_data = ( Dojo.app_session, Dojo.all_rooms, Dojo.people)
-        session_state = sqlite3.Binary(pickle.dumps(session_data))
-        db.save_state_data(session_state)
+        if Dojo.all_rooms or Dojo.people:
+            # if Dojo.all_rooms and Dojo.people:
+
+            app_session_data = (Dojo.app_session,Dojo.all_rooms, Dojo.people)
+            app_session_pickle = sqlite3.Binary(pickle.dumps(app_session_data))
+            db = DojoDb(db_name)
+            db.create_tables()
+            db.save_data(app_session_pickle)
+        else:
+            print('Session has no data to persist to the database.')
 
     def load_state(self, db_name):
         db = DojoDb(db_name)
-        app_state_data = db.get_data()
-        session = pickle.loads(app_state_data)
-        # print(session)
+        app_session_pickle = db.get_data()
+        app_session_data = pickle.loads(app_session_pickle)
+        app_session = app_session_data[0]
+        all_rooms = app_session_data[1]
+        people = app_session_data[2]
+        people_keys = [key for key in app_session['person'].keys()]
+
+        print(all_rooms)
+        print(app_session)
+        print(people)
+        print(people_keys)
 
 
 
@@ -334,7 +322,7 @@ def allocate_person_to_room(person, room):
 def append_room_to_session(room_key, room):
     Dojo.all_rooms.append(room)
     Dojo.app_session['room'][room_key] = room
-    Dojo.room_keys.append(room_key)
+
 
 def append_person_to_session(person):
     Dojo.people.append(person)

@@ -12,7 +12,7 @@ Usage:
     app.py print_unallocated [(-o <filename>)]
     app.py people_id
     app.py reallocate_person <person_identifier> <room_name>
-    app.py load_people
+    app.py load_people <filename>
     app.py save_state [(--db sqlite_database)]
     app.py load_state <sqlite_database>
     app.py (-i | --interactive)
@@ -146,9 +146,10 @@ class MyInteractive(cmd.Cmd):
 
     @docopt_cmd
     def do_load_people(self, arg):
-        """Usage: load_people
+        """Usage: load_people <filename>
         """
-        Dojo().load_people()
+        text_file = arg.get('<filename>')
+        Dojo().load_people(text_fileI)
 
     @docopt_cmd
     def do_save_state(self, arg):
