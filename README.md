@@ -12,6 +12,9 @@
 1. Clone the repository or download the zip file.
 2. install python3, virtualenvwrapper.
 3. install application's requirements with pip install -r requirements.txt
+4. Create a .dojo_data folder/directory on your home page.
+
+###NOTE: All text and databases will be created or stored here ~/.dojo.data and you can only load files stored there
 
 ###   Commands
  1. create_room room_type room_name `Use the command to create a room.`

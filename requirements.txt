@@ -1,4 +1,7 @@
 #The dojo allocator's requirement
 
+docopt
 nose
 flake8
+termcolor
+pyfiglet

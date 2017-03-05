@@ -7,7 +7,8 @@ class Person(object):
         self.fname = fname
         self.lname = lname
         self.role = role
-        # self.id = 0
+        self.pname = '{0} {1} ({2})'.format(
+            fname.title(), lname.title(), role.upper())
 
     def __repr__(self):
         return '{0} {1}'.format(self.fname, self.lname)

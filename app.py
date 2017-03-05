@@ -26,6 +26,8 @@ Options:
 import sys
 import cmd
 from docopt import docopt, DocoptExit
+from pyfiglet import Figlet
+from termcolor import colored, cprint
 
 from dojo import Dojo
 
@@ -63,9 +65,11 @@ def docopt_cmd(func):
 
 
 class MyInteractive(cmd.Cmd):
-    intro = 'Welcome to my interactive program!' \
-        + ' (type help for a list of commands.)'
-    prompt = 'dojo>>>'
+    fig_font = Figlet(font='graffiti')
+    welcome_text = fig_font.renderText('Dojo Space Allocator')
+    welcome_text = colored(welcome_text, 'green') + colored('Type help to get commands', 'magenta')
+    intro = welcome_text 
+    prompt = colored('dojo>>>', 'cyan')
     file = None
 
     @docopt_cmd
@@ -88,14 +92,14 @@ class MyInteractive(cmd.Cmd):
             if person_type == 'staff':
                 Dojo().add_person(fname, lname, 'staff')
             elif person_type == 'fellow':
-                if wants_accommodation not in ('y','Y'):
+                if wants_accommodation not in ('y', 'Y'):
                     Dojo().add_person(fname, lname, 'fellow')
                 else:
                     Dojo().add_person(fname, lname, 'fellow', 'y')
             else:
-                print('Invalid!!! Dojo Occupants are either Fellows or Staff')
+                cprint('Invalid!!! Dojo Occupants are either Fellows or Staff', 'red')
         else:
-            print('Names can only be string character')
+            cprint('Names can only be string character', 'red')
 
         # Dojo().add_person()
     @docopt_cmd
@@ -149,26 +153,29 @@ class MyInteractive(cmd.Cmd):
         """Usage: load_people <filename>
         """
         text_file = arg.get('<filename>')
-        Dojo().load_people(text_fileI)
+        Dojo().load_people(text_file)
 
     @docopt_cmd
     def do_save_state(self, arg):
         """Usage: save_state [(--db <sqlite_database>)]
-Options:
-    (--db <sqlite_database>) database [Default: app_session]
         """
-        pass
+        db_name = arg.get('<sqlite_database>', None)
+        if db_name:
+            Dojo().save_state(db_name)
+        else:
+            Dojo().save_state()
 
     @docopt_cmd
     def do_load_state(self, arg):
         """Usage: load_state <sqlite_database>
         """
-        pass
+        db_name = arg.get('<sqlite_database>')
+        Dojo().load_state(db_name)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
 
-        print('Good Bye!')
+        cprint('Good Bye!', 'green')
         exit()
 
 
