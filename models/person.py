@@ -4,11 +4,12 @@ class Person(object):
     """
 
     def __init__(self, fname, lname, role):
-        self.fname = fname
-        self.lname = lname
+        self.fname = fname.title()
+        self.lname = lname.title()
         self.role = role
         self.pname = '{0} {1} ({2})'.format(
             fname.title(), lname.title(), role.upper())
+        self.id = None
 
     def __repr__(self):
         return '{0} {1}'.format(self.fname, self.lname)

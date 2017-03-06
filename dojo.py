@@ -8,7 +8,7 @@ import random
 import sqlite3
 import pickle
 import termcolor
-from termcolor import colored, cprint
+from termcolor import cprint
 
 
 dbdir = os.path.abspath(os.path.join(os.path.dirname(__file__), './db'))
@@ -32,10 +32,13 @@ class Dojo(object):
     Room names are unique and are used as the room identifier
     """
     # Class instance variables and structures to hold app data
-    app_session = {'room': {}, 'person': {}}
-    all_rooms = []
-    people = []
-    people_keys = []
+    def __init__(self):
+        self.app_session = {'room': {}, 'person': {}}
+        self.all_rooms = []
+        self.people = []
+        self.people_keys = []
+        self.home = expanduser('~')
+        self.data_dir = self.home + '/.dojo_data/'
 
     def create_room(self, purpose, room_names):
         # check if the purpose is either living or an office
@@ -43,25 +46,25 @@ class Dojo(object):
         if purpose.lower() in ('office', 'living'):
             if purpose.lower() == 'office':
                 for room_name in room_names:
-                    if (room_name.upper() in Dojo.app_session['room'].keys()):
+                    if (room_name.upper() in self.app_session['room'].keys()):
                         cprint('{} already exists. '
                             'Use a different name'.format(room_name.upper()), 'red')
                     else:
                         room_key = room_name.upper()
-                        room_name = Office(room_key)
-                        append_room_to_session_data(room_key,room_name)
+                        room = Office(room_key)
+                        self.append_room_to_session_data(room_key ,room)
                         cprint('An Office called {0} ' 
                             'has been successfully created!'.
                             format(room_key), 'green')
             else:
                 for room_name in room_names:
-                    if (room_name.upper() in Dojo.app_session['room'].keys()):
+                    if (room_name.upper() in self.app_session['room'].keys()):
                         cprint('Room name already exists,'
                             ' Use a different name', 'red' )
                     else:
                         room_key = room_name.upper()
-                        room_name = LivingSpace(room_key)
-                        append_room_to_session_data(room_key, room_name)
+                        room = LivingSpace(room_key)
+                        self.append_room_to_session_data(room_key, room)
                         cprint('A Living Space called {} '
                             'has been successfully created!'.format(
                                 room_key), 'green')
@@ -71,285 +74,366 @@ class Dojo(object):
                 'office or a living Space.'.format(purpose), 'red')
 
     def add_person(self, fname, lname, role, wants_accommodation = 'n'):
+        # check role of the person supplied must either be a staff or a fellow
         if role.lower() in ('fellow', 'staff'):
             if role.lower() == 'fellow':
+                # create fellow from class Fellow
                 fellow = Fellow(fname, lname, wants_accommodation)
-                available_office = get_available_room('office')
+                available_office = self.get_available_room('office')
                 if available_office:
-                    allocate_person_to_room(fellow, available_office)
+                    self.allocate_person_to_room(fellow, available_office)
                 if wants_accommodation in ('y', 'Y'):
-                    available_living = get_available_room('living')
+                    # if a fellow wants accommodation check for available rooms and return it.
+                    available_living = self.get_available_room('living')
                     if available_living:
-                        allocate_person_to_room(fellow, available_living)
-                append_person_to_session_data(fellow)
+                        self.allocate_person_to_room(fellow, available_living)
+                self.append_person_to_session_data(fellow)
                 cprint('Fellow {0} {1} has been successfully added.'.format(
-                    fname, lname), 'green')
+                    fname.title(), lname.title()), 'green')
                 if fellow.office:
                     cprint('{0} has been allocated the Office {1}'.
-                        format(fellow.fname, fellow.office), 'green')
+                        format(fellow.fname.title(), fellow.office), 'green')
                 else:
                     cprint('There are currently no vacant office Spaces in Dojo.'
-                        ' Create Offices and reallocate the Fellow.', 'magenta')
+                        ' Create offices and reallocate the Fellow.', 'magenta')
                 if wants_accommodation in ('y', 'Y'):
                     if fellow.living_space:
                         cprint('{0} has been allocated the Living space {1}'.
-                            format(fellow.fname, fellow.living_space), 'green')
+                            format(fellow.fname.title(), fellow.living_space), 'green')
                     else:
                         cprint('There are currently no vacant living Spaces in Dojo, Create'
                             ' a living Space and reallocate the Fellow to the Room.', 'magenta')
             else:
                 staff = Staff(fname, lname)
-                available_office = get_available_room('office')
+                available_office = self.get_available_room('office')
                 if available_office:
-                    allocate_person_to_room(staff, available_office)
-                append_person_to_session_data(staff)
+                    self.allocate_person_to_room(staff, available_office)
+                self.append_person_to_session_data(staff)
                 cprint('Staff {0} {1} has been successfully added.'.
-                    format(fname, lname), 'green')
+                    format(fname.title(), lname.title()), 'green')
                 if staff.office:
                     cprint('{0} has been allocated the Office {1}'.
-                        format(staff.fname, staff.office), 'green')
+                        format(staff.fname.title(), staff.office), 'green')
                 else:
-                    cprint('There are currently no office Spaces in Dojo.'
-                        ' Create Offices and reallocate the Staff.', 'magenta')
+                    cprint('There are currently no vacant office spaces in Dojo.'
+                        ' Create offices and reallocate the Staff.', 'magenta')
         else:
             cprint('You can only add fellows and staff!!!', 'red')
 
     def print_room(self, room_name):
-        if (Dojo.all_rooms):
+        if (self.all_rooms):
             room_key = room_name.upper()
-            if room_key in Dojo.app_session['room'].keys():
-                occupants=  Dojo.app_session['room'][room_key].occupants
+            if room_key in self.app_session['room'].keys():
+                occupants=  self.app_session['room'][room_key].occupants
                 if occupants:
                     occupants = [occupant.pname for occupant in occupants]
                     cprint ('ROOM ({0}) PURPOSE ({1})'.
-                        format( Dojo.app_session['room'][room_key].name,Dojo.app_session['room'][room_key].purpose.upper()), 'green')
+                        format( self.app_session['room'][room_key].name,self.app_session['room'][room_key].purpose.upper()), 'green')
                     cprint(' , '.join(occupants), 'green')
                 else:
-                    cprint ('{0} currently has no occupant(s)!'.format(room_key), 'magenta')
+                    cprint ('{0} currently has no occupant(s)!'.
+                            format(room_key), 'magenta')
             else:
                 cprint('Room doesn\'t exist in Dojo!!!', 'red')
         else:
             cprint('There are currently no rooms in Dojo.', 'magenta')
 
-    def print_allocations(self, to_file='n'):
-        if (Dojo.all_rooms):
-            for room in Dojo.all_rooms:
+    def print_allocations(self , to_file = 'n'):
+        # print_allocations take akey word argument to_file and defaults to 'n'
+        # This should be passed when user justs wants to print to sys stdout and 
+        # not have it stored.
+        if (self.all_rooms):
+            for room in self.all_rooms:
                 if (room.occupants):
                     members = ', '.join(
                         str(person).title() for person in room.occupants)
-                    text = '{0}\n---------------------------\n{1}\n'.format(room.name.title(), members)
-                    if not (to_file.endswith('.txt')):
-                        print(text)
-                    else:
-                        file = open(to_file, 'a')
-                        file.write(text)
-                        file.close()
-                        print('Successfully written Allocations to {0}.\n'.
-                              format(to_file))
+                    self.print_allocations_func(room, to_file,members)
+        
                 else:
-                    text = '{0}\n----------------------\n{1} is empty.\n'.format(
-                        room.name.upper(), room.name.title())
-                    if not(to_file.endswith('.txt')):
-                        print(text)
-                    else:
-                        file = open(to_file, 'a')
-                        file.write(text)
-                        file.close()
-                        print('Successfully written Allocations to {0}.\n'.
-                              format(to_file))
+                    self.print_allocations_func(room, to_file)
+            # feedback for successful print to a text file
+            if not to_file.lower() == 'n':
+                if not to_file.endswith('.txt'):
+                    to_file += '.txt'
+                    file_path = self.data_dir + to_file
+                else:
+                    file_path = self.data_dir + to_file
+                cprint('Successfully written Allocations to {0}.\n'.
+                       format(file_path), 'green')
+        else:
+            cprint('There are currently no rooms in Dojo', 'magenta')
 
     def print_unallocated(self, to_file='n'):
-        if (Dojo.people):
-            for person in Dojo.people:
-                if not (person.office):
-                    if not (to_file.endswith('.txt')):
-                        print(
-                            '{1} {0} needs an Office.\n\n'.format(str(person).title(), person.role.upper()))
-                    else:
-                        text = ('{0} needs an Office.\n\n'.format(
-                            str(person).title()))
-                        file = open(to_file, 'a')
-                        file.write(text)
-                        file.close()
-
-                if (person.role == 'fellow'):
-                    if ((person.wants_accommodation == 'y') and (not person.living_space)):
-                        if not (to_file.endswith('.txt')):
-                            print(
-                            'FELLOW {0} needs a Living Space.\n'.format(str(person).title()))
+        to_file_living = to_file
+        if (self.people):
+            no_office_allocated_list = [person for person in self.people if not person.office]
+            no_living_space_allocated_list = [person for person in self.people if person.role =='fellow' and (person.wants_accommodation=='y' or 'Y') and not person.living_space]
+            if (no_office_allocated_list or no_living_space_allocated_list):
+                cprint('ID       Person DETAILS', 'green')
+                if no_office_allocated_list:
+                    for person in no_office_allocated_list:
+                        self.print_unallocated_func(person,'office', to_file)
+                    if to_file not in ('N', 'n'):
+                        if not to_file.endswith('.txt'):
+                            to_file+= '.txt'
+                            file_path = self.data_dir + to_file
                         else:
-                            text = ('{0} needs a Living Space.\n\n'.format(
-                                str(person).title()))
-                            file = open(to_file, 'a')
-                            file.write(text)
-                            file.close()
-                            print('{0} needs a Living Space'.format(
-                                str(person).upper()))
+                            file_path =self.data_dir + to_file
+                        cprint('Successfully written person(s) that need office spaces {}'.format(file_path), 'green')
+
+                if no_living_space_allocated_list:
+                    for person in no_living_space_allocated_list:
+                        self.print_unallocated_func(person, 'living', to_file)
+                    if to_file not in ('N', 'n'):
+                        if not to_file.endswith('.txt'):
+                            to_file+= '.txt'
+                            file_path = self.data_dir + to_file
+                        else:
+                            file_path =self.data_dir + to_file
+                        cprint('Successfully written person(s) that need living spaces {}'.format(file_path), 'green')
+            else:
+                cprint('There are no unallocated people', 'magenta')
         else:
-            print('No person allocated to Dojo rooms yet')
+            cprint('Person(s) not allocated into Dojo rooms yet', 'red')
 
     def people_id(self):
-        print('ID          PERSON              ROLE\n')
-        for index, person_key in enumerate(Dojo.people_keys):
-            print('{0}     {1}        {2}'.format(person_key, Dojo.people[index], Dojo.people[index].role.upper()))
+        if self.people:
+            cprint('PERSON-ID          PERSON-DETAILS', 'green')
+            for index, person_key in enumerate(self.people_keys):
+                cprint('{0}     {1}'.format(person_key, self.people[index].pname))
+        else:
+            cprint('No person added yet!!!', 'red')
 
     def reallocate_person(self, person_id, room_name):
-        if (person_id in Dojo.people_keys) and (room_name.upper() in Dojo.app_session['room'].keys()):
-            if (Dojo.app_session['person'][person_id].office != room_name.upper()) or (Dojo.app_session['person'][person_id].living_space == room_name.upper()):
+        if (person_id in self.people_keys) and (room_name.upper() in self.app_session['room'].keys()):
+            if (self.app_session['person'][person_id].office != room_name.upper()) and (self.app_session['person'][person_id].living_space != room_name.upper()):
                 room_key = room_name.upper()
-                room = Dojo.app_session['room'][room_key]
-                person = Dojo.app_session['person'][person_id]
-                if (check_room_size(room)):
+                room = self.app_session['room'][room_key]
+                person = self.app_session['person'][person_id]
+                # check to see if the intended allocation is full
+                if (self.check_room_size(room)):
+                    # check to see if the room-provided's purpose and separate
+                    # the function enters the condition office for staff and fellows
                     if room.purpose == 'office':
                         if person.office:
-                            delete_person_from_room(
-                                person, Dojo.app_session['room'][person.office])
-                            person.office = add_person_to_room(person, room)
-                            print('{0} has been allocated the office {1}'.format(
-                                person.fname, room.name))
+                            # person previously has an office, delete  person from the office.
+                            self.delete_person_from_room(
+                                person, self.app_session['room'][person.office])
+                            # add person to the new allocated office
+                            person.office = self.add_person_to_room(person, room)
+                            cprint('{0} has been allocated the office {1}'.format(
+                                person.fname, room.name), 'green')
                         else:
-                            person.office = add_person_to_room(person, room)
-                            print('{0} has been allocated the office {1}'.format(
-                                person.fname, room.name))
+                            # if a person does not have an office go ahead and allocate an office to the person.
+                            person.office = self.add_person_to_room(person, room)
+                            cprint('{0} has been allocated the office {1}'.format(
+                                person.fname, room.name), 'green')
                     else:
+                        # condition that seives for fellows that want a living space
                         if person.role == 'fellow':
-                            if person.wants_accommodation == 'y':
+                            # check if fellow wants a living space.
+                            if person.wants_accommodation in ('y', 'Y'):
                                 if person.living_space:
-                                    delete_person_from_room(
-                                        person, Dojo.app_session['room'][
-                                            person.living_space])
-                                    person.living_space = add_person_to_room(
+                                    # if a person has a living space prior delete person from the living space and allocate person to the new room
+                                    self.delete_person_from_room(
+                                        person, self.app_session['room'][person.living_space])
+                                    person.living_space = self.add_person_to_room(
                                         person, room)
-                                    print(
-                                        '{0} has been allocated\
-                                        the living space {1}'.
-                                        format(person.fname, room.name))
+                                    cprint(
+                                        '{0} has been allocated the living space {1}'.
+                                        format(person.fname, room.name), 'green')
                                 else:
-                                    person.living_space = add_person_to_room(
+                                    # If person doesn't have a living space go ahead and give the person a space.
+                                    person.living_space = self.add_person_to_room(
                                         person, room)
-                                    print(
-                                        '{0} has been allocated\
-                                        the living space {1}'.
-                                        format(person.fname, room.name))
+                                    cprint(
+                                        '{0} has been allocated the living space {1}'.
+                                        format(person.pname, room.name), 'green')
                         else:
-                            print('You cannot add {}, a Staff to a living Space.'.
-                                  format(person.fname))
+                            cprint('You cannot add Staff {}, to a living Space.'.format(person.pname), 'red')
                 else:
-                    print('You cannot Reallocate to a full Room')
+                    cprint('You cannot Reallocate to a full Room', 'red')
             else:
-                print("You cannot reallocate a person to his present room")
+                cprint("You cannot reallocate a person to current room", 'red')
 
         else:
-            print('Invalid Person Id or Room name')
+            cprint('Invalid Person ID or Room Name', 'red')
 
     def load_people(self, text_file):
-        if text_file.endswith('.txt'):
-            file = open(text_file)
-
-            for line in file.readlines():
-                values = line.split()
-                if len(values) == 3:
-                    self.add_person(values[0], values[1], values[2])
-                elif len(values) == 4:
-                    self.add_person(values[0], values[1], values[2], values[3])
-                else:
-                    pass
-            file.close()
+        # check to see if it is a valid text file, if not add the extension
+        # you don't want your users to always type the .txt everytime!!!
+        if not text_file.endswith('.txt'):
+            text_file += '.txt'
+        # check if .dojo_data directory exists on the home folder
+        if os.path.exists(self.data_dir):
+            text_file = self.data_dir + text_file
+            # check if the text file exists
+            if os.path.isfile(text_file):
+                with open(text_file, 'r') as load_people_source:
+                    for line in load_people_source.readlines():
+                        values = line.split()
+                        if len(values) == 3:
+                            self.add_person(values[0], values[1], values[2])
+                        elif len(values) == 4:
+                            self.add_person(values[0], values[1], values[2], values[3])
+                        else:
+                            cprint('Text in {} not properly formatted, check the documentation for format.'.format(text_file), 'magenta')
+                    load_people_source.close()
+            else:
+                cprint('file doesn\'t exist in the ~/.dojo_data directory!!!', 'red')
         else:
-            print('Invalid text file, can only load people from a text file')
+            cprint('It seems you don\'t have a ~/.dojo_data folder!!! Create the directory and add a text file with the specified format', 'red')
 
     def save_state(self, db_name='dojo.db'):
+        # check if it is a valid extension else add the extension. 
         if not db_name.endswith('.db'):
             db_name =  db_name + '.db'
-        home = expanduser('~')
-        db_dir = home + '/.dojo_data'
-        if os.path.exists(db_dir):
-            db_name = db_dir + '/' + db_name
+        # check if path exists else create the path
+        if os.path.exists(self.data_dir):
+            db_name = self.data_dir  + db_name
         else:
-            db_dir = os.mkdirs(home + '/.dojo_data')
-            db_name = db_dir + '/' + db_name
-
-        if Dojo.all_rooms or Dojo.people:
-            if db_name == db_dir + 'dojo.db':
+            self.data_dir = os.mkdirs(self.home + '/.dojo_data/')
+            db_name = self.data_dir + db_name
+        # you don't want to save an empty session!!!
+        if self.all_rooms or self.people:
+            if db_name == self.data_dir + 'dojo.db':
                 print ('Existing Data on default database dojo will be wiped off.')
-            app_session_data = (Dojo.app_session,Dojo.all_rooms, Dojo.people)
+            app_session_data = (self.app_session,self.all_rooms, self.people)
             app_session_pickle = sqlite3.Binary(pickle.dumps(app_session_data))
             db = DojoDb(db_name)
             db.create_tables()
             db.save_data(app_session_pickle)
 
         else:
-            print('Session has no data to persist to the database.')
+            cprint('Session has no data to persist to the database.', 'magenta')
 
     def load_state(self, db_name):
+        # check extension if not create it.
         if not db_name.endswith('.db'):
             db_name += '.db'
-            home = expanduser('~')
-            db_dir = home + '/.dojo_data'
-            db_name = db_dir + '/' + db_name
-            print (db_name)
-
-        if os.path.isfile(db_name):
+            db_name = self.data_dir + db_name
+        else:
+            db_name = self.data_dir + db_name
+        # check for validity of the path and the database itself
+        if (os.path.isfile(db_name)):
             db = DojoDb(db_name)
             app_session_pickle = db.get_data()
             if app_session_pickle:
-                app_session_data = pickle.loads(app_session_pickle)
-                Dojo.app_session = app_session_data[0]
-                Dojo.all_rooms = app_session_data[1]
-                Dojo.people = app_session_data[2]
-                Dojo.people_keys = [key for key in Dojo.app_session['person'].keys()]
+                loaded_app_session_data = pickle.loads(app_session_pickle)
+                self.app_session = loaded_app_session_data[0]
+                self.all_rooms = loaded_app_session_data[1]
+                self.people = loaded_app_session_data[2]
+                self.people_keys = [key for key in self.app_session['person'].keys()]
+                cprint('state loaded from {}'.format(db_name), 'green ')
             else:
-                print ('The database is invalid and does not contain'
-                'data from the Applications\'s saved state.')
+                cprint ('The database is invalid and does not contain'
+                'data from the Applications\'s saved state.', 'red')
         else:
-            print('Not a valid database check {} for the available databases'.format(db_dir))
+            cprint('Not a valid database check home/.dojo_data for the available databases', 'red')
+
+    #These are helper methods used in other dojo methods.
+    def add_person_to_room(self,person, room):
+        room.occupants.append(person)
+        return room.name
 
 
-# Functions used in the Dojo Class
-
-def add_person_to_room(person, room):
-    room.occupants.append(person)
-    return room.name
+    def delete_person_from_room(self, person, room):
+        room.occupants.remove(person)
 
 
-def delete_person_from_room(person, room):
-    room.occupants.remove(person)
+    def check_room_size(self, room):
+        if len(room.occupants) < room.max_size:
+            return True
+        else:
+            return False
 
 
-def check_room_size(room):
-    if len(room.occupants) < room.max_size:
-        return True
-    else:
-        return False
+    def get_available_room(self, purpose):
+        available_rooms = [room for room in self.all_rooms if room.purpose == purpose and len(room.occupants) < room.max_size]
+        if available_rooms:
+            room = random.choice(available_rooms)
+            return room
+        return None
 
 
-def get_available_room(purpose):
-    rooms = Dojo.all_rooms
-    available_rooms = []
-    for room in rooms:
-        if (room.purpose == purpose) and (len(room.occupants) < room.max_size):
-            available_rooms.append(room)
-    if available_rooms:
-        room = random.choice(available_rooms)
-        return room
-    return None
+    def allocate_person_to_room(self, person, room):
+        self.add_person_to_room(person, room)
+        if room.purpose == "office":
+            person.office = room.name
+        elif room.purpose == "living":
+            person.living_space = room.name
 
 
-def allocate_person_to_room(person, room):
-    add_person_to_room(person, room)
-    if room.purpose == "office":
-        person.office = room.name
-    elif room.purpose == "living":
-        person.living_space = room.name
+    def append_room_to_session_data(self, room_key, room_object):
+        self.all_rooms.append(room_object)
+        self.app_session['room'][room_key] = room_object
 
 
-def append_room_to_session_data(room_key, room):
-    Dojo.all_rooms.append(room)
-    Dojo.app_session['room'][room_key] = room
+    def append_person_to_session_data(self,person_object):
+        self.people.append(person_object)
+        person_key = len(self.people)
+        person_object.id = person_key
+        self.app_session['person'][person_key] = person_object
+        self.people_keys.append(person_key)
+
+    def print_unallocated_func(self, person_object, room_purpose_needed, print_to_file):
+        text = '({0}) {1} ({2}) space needed\n'.format(person_object.id, person_object.pname, room_purpose_needed)
+        # check if the user wants to output on the screen or have it written in a text file
+        if print_to_file in ('n', 'N'):
+            cprint(text, 'magenta')
+        else:
+            if not print_to_file.endswith('.txt'):
+                print_to_file += '.txt'
+            if os.path.exists(self.data_dir):
+                print_to_file = self.data_dir + print_to_file
+            else:
+                os.path.makedirs(self.data_dir)
+                print_to_file = self.data_dir + print_to_file
+            with open(print_to_file, 'a') as unallocated_file:
+                unallocated_file.write(text)
+                unallocated_file.close()
+
+    def print_allocations_func(self,room,print_to_file, room_occupants=None):
+        # if a room has occupants text is formed with the members list.
+        dash_lines = '-'*60
+        if room_occupants:  
+            text = ('{0}\n{1}\n{2}\n'.format(room.name,dash_lines, room_occupants))
+            if print_to_file.lower() == 'n':
+                cprint(text, 'green')
+            else:
+                # check to see the print to file details
+                if not print_to_file.endswith('.txt'):
+                    print_to_file = print_to_file + '.txt'
+                if os.path.exists(self.data_dir):
+                    print_to_file = self.data_dir + print_to_file
+                else:
+                    os.path.mkdirs(self.data_dir)
+                    print_to_file = self.data_dir + to_file
+                with open(print_to_file, 'a') as allocations_file:
+                    allocations_file.write(text)
+                    allocations_file.close()
+                
+        else:
+            # rooms with no occupants
+            text = ('{0}\n{1}\n{0} has no occupants yet\n'.format(room.name, dash_lines))
+            if print_to_file.lower()=='n':
+                cprint(text, 'green')
+            else:
+                # check the details and print to the write file
+                if not print_to_file.endswith('.txt'):
+                    print_to_file = print_to_file + '.txt'
+                if os.path.exists(self.data_dir):
+                    print_to_file = self.data_dir + print_to_file
+                else:
+                    os.path.mkdirs(self.data_dir)
+                    print_to_file = self.data_dir + to_file
+                with open(print_to_file, 'a') as allocations_file:
+                    allocations_file.write(text)
+                    allocations_file.close()
 
 
-def append_person_to_session_data(person):
-    Dojo.people.append(person)
-    person_key = len(Dojo.people)
-    Dojo.app_session['person'][person_key] = person
-    Dojo.people_keys.append(person_key)
+
+
+
+
+

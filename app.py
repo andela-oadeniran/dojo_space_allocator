@@ -30,7 +30,7 @@ from pyfiglet import Figlet
 from termcolor import colored, cprint
 
 from dojo import Dojo
-
+dojo = Dojo()
 
 def docopt_cmd(func):
     """
@@ -68,7 +68,7 @@ class MyInteractive(cmd.Cmd):
     fig_font = Figlet(font='graffiti')
     welcome_text = fig_font.renderText('Dojo Space Allocator')
     welcome_text = colored(welcome_text, 'green') + colored('Type help to get commands', 'magenta')
-    intro = welcome_text 
+    intro = welcome_text
     prompt = colored('dojo>>>', 'cyan')
     file = None
 
@@ -78,7 +78,7 @@ class MyInteractive(cmd.Cmd):
         """
         room_purpose = arg.get('<room_type>')
         room_names = arg.get('<room_names>')
-        Dojo().create_room(room_purpose, room_names)
+        dojo.create_room(room_purpose, room_names)
 
     @docopt_cmd
     def do_add_person(self, arg):
@@ -89,25 +89,25 @@ class MyInteractive(cmd.Cmd):
         person_type = arg.get('<FELLOW/STAFF>')
         wants_accommodation = arg.get('<wants_accommodation>')
         if fname.isalpha() and lname.isalpha():
-            if person_type == 'staff':
-                Dojo().add_person(fname, lname, 'staff')
-            elif person_type == 'fellow':
+            if person_type.lower() == 'staff':
+                dojo.add_person(fname, lname, 'staff')
+            elif person_type.lower() == 'fellow':
                 if wants_accommodation not in ('y', 'Y'):
-                    Dojo().add_person(fname, lname, 'fellow')
+                    dojo.add_person(fname, lname, 'fellow')
                 else:
-                    Dojo().add_person(fname, lname, 'fellow', 'y')
+                    dojo.add_person(fname, lname, 'fellow', 'y')
             else:
-                cprint('Invalid!!! Dojo Occupants are either Fellows or Staff', 'red')
+                cprint('Invalid!!! Dojo Occupants'
+                       'are either Fellows or Staff', 'red')
         else:
             cprint('Names can only be string character', 'red')
 
-        # Dojo().add_person()
     @docopt_cmd
     def do_print_room(self, arg):
         """Usage: print_room <room_name>
         """
         room_name = arg.get('<room_name>')
-        Dojo().print_room(room_name)
+        dojo.print_room(room_name)
 
     @docopt_cmd
     def do_print_allocations(self, arg):
@@ -115,9 +115,9 @@ class MyInteractive(cmd.Cmd):
         """
         filename = arg.get('<filename>')
         if not (filename):
-            Dojo().print_allocations()
+            dojo.print_allocations()
         else:
-            Dojo().print_allocations(filename)
+            dojo.print_allocations(filename)
 
     @docopt_cmd
     def do_print_unallocated(self, arg):
@@ -125,16 +125,15 @@ class MyInteractive(cmd.Cmd):
         """
         filename = arg.get('<filename>')
         if not (filename):
-            Dojo().print_unallocated()
+            dojo.print_unallocated()
         else:
-            Dojo().print_unallocated(filename)
+            dojo.print_unallocated(filename)
 
     @docopt_cmd
     def do_people_id(self, arg):
         """Usage: people_id
         """
-        Dojo().people_id()
-        pass
+        dojo.people_id()
 
     @docopt_cmd
     def do_reallocate_person(self, arg):
@@ -144,7 +143,7 @@ class MyInteractive(cmd.Cmd):
         room_name = arg.get('<room_name>')
         if person_id.isdigit():
             person_id = int(person_id)
-            Dojo().reallocate_person(person_id, room_name)
+            dojo.reallocate_person(person_id, room_name)
         else:
             print('Person Id can only be an Integer')
 
@@ -153,7 +152,7 @@ class MyInteractive(cmd.Cmd):
         """Usage: load_people <filename>
         """
         text_file = arg.get('<filename>')
-        Dojo().load_people(text_file)
+        dojo.load_people(text_file)
 
     @docopt_cmd
     def do_save_state(self, arg):
@@ -161,21 +160,29 @@ class MyInteractive(cmd.Cmd):
         """
         db_name = arg.get('<sqlite_database>', None)
         if db_name:
-            Dojo().save_state(db_name)
+            dojo.save_state(db_name)
         else:
-            Dojo().save_state()
+            dojo.save_state()
 
     @docopt_cmd
     def do_load_state(self, arg):
         """Usage: load_state <sqlite_database>
         """
         db_name = arg.get('<sqlite_database>')
-        Dojo().load_state(db_name)
+        dojo.load_state(db_name)
+
+    @docopt_cmd
+    def do_pnt_allo(self, arg):
+        """Usage: pnt_allo [-o=filename]
+        """
+        print('here')
+        print (arg)
+        # pasr = arg.get()
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
 
-        cprint('Good Bye!', 'green')
+        cprint('Dojo says Good Bye!', 'green')
         exit()
 
 

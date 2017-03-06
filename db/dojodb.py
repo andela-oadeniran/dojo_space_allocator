@@ -34,9 +34,6 @@ class DojoDb():
         except:
             return None
 
-    def delete_data(self):
-        pass
-
     def save_data(self, app_session_pickle):
         self.curr.execute(
             'INSERT INTO app_session_data VALUES(?)', (app_session_pickle,))

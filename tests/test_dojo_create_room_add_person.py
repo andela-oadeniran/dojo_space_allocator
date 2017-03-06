@@ -67,6 +67,7 @@ class TestCreateRoom(unittest.TestCase):
         capture_print = sys.stdout.getvalue().strip()
         self.assertEqual(capture_print[0:24], 'The Room type is invalid')
 
+
 class TestAddPerson(unittest.TestCase):
     """ The test suite for the Dojo Method to Add people"""
 
@@ -95,6 +96,7 @@ class TestAddPerson(unittest.TestCase):
         value5 = Dojo.app_session['person'][4]
         self.assertEqual(value4.office, 'OPUS')
         self.assertEqual(value4.living_space, 'OLYMPUS')
+
 
 if '__name__' == '__main__':
     unittest.main()
