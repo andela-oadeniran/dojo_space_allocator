@@ -8,3 +8,4 @@ models/dojo.sublime-workspace
 *.db
 *.pyc
 .DS_STORE
+.coverage

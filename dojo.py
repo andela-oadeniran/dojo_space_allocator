@@ -222,7 +222,7 @@ class Dojo(object):
 
     def reallocate_person(self, person_id, room_name):
         if (person_id in self.people_keys) and (room_name.upper() in self.app_session['room'].keys()):
-            if (self.app_session['person'][person_id].office != room_name.upper()) and (self.app_session['person'][person_id].living_space != room_name.upper()):
+            if (self.app_session['person'][person_id].office != room_name.upper()):
                 room_key = room_name.upper()
                 room = self.app_session['room'][room_key]
                 person = self.app_session['person'][person_id]
@@ -249,31 +249,38 @@ class Dojo(object):
                         if person.role == 'fellow':
                             # check if fellow wants a living space.
                             if person.wants_accommodation in ('y', 'Y'):
-                                if person.living_space:
-                                    # if a person has a living space prior delete person from the living space and allocate person to the new room
-                                    self.delete_person_from_room(
-                                        person, self.app_session['room'][person.living_space])
-                                    person.living_space = self.add_person_to_room(
-                                        person, room)
-                                    cprint(
-                                        '{0} has been allocated the living space {1}'.
-                                        format(person.fname, room.name), 'green')
+                                if (self.app_session['person'][person_id].living_space != room_name.upper()):
+                                    if person.living_space:
+                                        # if a person has a living space prior delete person from the living space and allocate person to the new room
+                                        self.delete_person_from_room(
+                                            person, self.app_session['room'][person.living_space])
+                                        person.living_space = self.add_person_to_room(
+                                            person, room)
+                                        cprint(
+                                            '{0} has been allocated the living space {1}'.
+                                            format(person.fname, room.name), 'green')
+                                    else:
+                                        # If person doesn't have a living space go ahead and give the person a space.
+                                        person.living_space = self.add_person_to_room(
+                                            person, room)
+                                        cprint(
+                                            '{0} has been allocated the living space {1}'.
+                                            format(person.pname, room.name), 'green')
                                 else:
-                                    # If person doesn't have a living space go ahead and give the person a space.
-                                    person.living_space = self.add_person_to_room(
-                                        person, room)
-                                    cprint(
-                                        '{0} has been allocated the living space {1}'.
-                                        format(person.pname, room.name), 'green')
+                                    cprint("You cannot reallocate a person to current room", 'red')
+                                    return 'You cannot reallocate person to current room'
+
                         else:
                             cprint('You cannot add Staff {}, to a living Space.'.format(person.pname), 'red')
                 else:
                     cprint('You cannot Reallocate to a full Room', 'red')
             else:
                 cprint("You cannot reallocate a person to current room", 'red')
+                return 'You cannot reallocate person to current room'
 
         else:
             cprint('Invalid Person ID or Room Name', 'red')
+            return 'Invalid Person Identifier or Room'
 
     def load_people(self, text_file):
         # check to see if it is a valid text file, if not add the extension

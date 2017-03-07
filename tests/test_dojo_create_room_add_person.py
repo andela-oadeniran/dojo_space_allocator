@@ -63,6 +63,34 @@ class TestCreateRoom(unittest.TestCase):
         room_count_diff = new_room_count - initial_room_count
         self.assertEqual(room_count_diff, 0)
 
+    def test_max_office_size(self):
+        self.dojo.create_room('office', ['MAZE'])
+        room = self.dojo.app_session['room']['MAZE']
+        self.assertEqual(room.max_size, 6)
+        self.assertEqual(len(room.occupants), 0)
+
+    def test_max_living_space_size(self):
+        self.dojo.create_room('living', ['ORION'])
+        room = self.dojo.app_session['room']['ORION']
+        self.assertEqual(room.max_size, 4)
+        self.assertEqual(len(room.occupants), 0)
+
+    def test_max_limit_added_office(self):
+        self.dojo.create_room('office', ['DEV'])
+        room = self.dojo.app_session['room']['DEV']
+        self.assertEqual(len(room.occupants), 0)
+        self.dojo.add_person('ladi', 'adeniran', 'fellow')
+        self.dojo.add_person('ade', 'poju', 'staff')
+        self.dojo.add_person('ginu', 'whyne', 'fellow')
+        self.dojo.add_person('mark', 'anthony', 'fellow')
+        self.dojo.add_person('anthony', 'hamilton', 'fellow')
+        self.dojo.add_person('game', 'truce', 'fellow')
+        self.dojo.add_person('saliu', 'bryan', 'fellow')
+        self.dojo.add_person('zuck', 'beast', 'fellow')
+        self.assertEqual(len(room.occupants), 6)
+
+
+
     def tearDown(self):
         del self.dojo
 
@@ -89,12 +117,42 @@ class TestAddPerson(unittest.TestCase):
 
     def test_add_fellow_staff_to_office_successfully(self):
         self.dojo.create_room('office', ['Blue'])
-        self.add_person('Ab', 'Soul', 'fellow')
-        self.add_person('Jeremih', 'Camp', 'staff')
+        self.dojo.add_person('Ab', 'Soul', 'fellow')
+        self.dojo.add_person('Jeremih', 'Camp', 'staff')
         fellow = self.dojo.app_session['person'][1]
         staff = self.dojo.app_session['person'][2]
+        room = self.dojo.app_session['room']['BLUE']
         self.assertTrue(fellow)
         self.assertTrue(staff)
+        self.assertEqual(fellow.office, 'BLUE')
+        self.assertEqual(staff.office, 'BLUE')
+        self.assertTrue(room.occupants)
+        self.assertEqual(str(room.occupants[0]), 'Ab Soul')
+        self.assertEqual(str(room.occupants[1]), 'Jeremih Camp')
+
+    def test_add_fellow_to_living_space(self):
+        self.dojo.create_room('living', ['Amity'])
+        self.dojo.add_person('Jeremiah', 'Camp', 'fellow', 'y')
+        fellow = self.dojo.app_session['person'][1]
+        room = self.dojo.app_session['room']['AMITY']
+        self.assertEqual(fellow.living_space, 'AMITY')
+        self.assertEqual(str(room.occupants[0]), 'Jeremiah Camp')
+
+
+    def test_only_add_fellow_or_staff(self):
+        self.dojo.add_person('Joshua', 'Emmsong', 'Engineer')
+        engineer = self.dojo.app_session['person']
+        self.assertFalse(engineer)
+
+    def test_staff_not_have_living_space(self):
+        self.dojo.create_room('living', ['UPPERROOM'])
+        self.dojo.add_person('ladi', 'adeniran','staff', 'y')
+        staff = self.dojo.app_session['person'][1]
+        self.assertTrue(staff)
+        self.assertEqual(staff.office, None)
+        room = self.dojo.app_session['room']['UPPERROOM']
+        self.assertFalse(room.occupants)
+
 
 
 

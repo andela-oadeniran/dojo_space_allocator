@@ -28,3 +28,11 @@
  8. load_people `The command helps load a list of persons(add a list) from a text file`
  9. save_state [--db sqlitedatabase] `saves the session data into an sqlite database`
  10. load_state sqlite-database-name `loads data from the database name specified.`
+
+ ##Sample Usage
+ 1. create_room office Idanre Akure Baga
+ 
+
+
+ # All Databases and text file used in the application are stored in the .dojo_data in the users Home Directory.
+ #Users can create this directory but the Application Automatically create it, when commands that use text or db files are invoked except load_state. That requires a valid data base to be in the directory.
