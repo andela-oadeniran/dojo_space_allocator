@@ -315,7 +315,7 @@ class Dojo(object):
         if os.path.exists(self.data_dir):
             db_name = self.data_dir  + db_name
         else:
-            self.data_dir = os.mkdirs(self.home + '/.dojo_data/')
+            self.data_dir = os.mkdir(self.home + '/.dojo_data/')
             db_name = self.data_dir + db_name
         # you don't want to save an empty session!!!
         if self.all_rooms or self.people:
@@ -430,7 +430,7 @@ class Dojo(object):
                 if os.path.exists(self.data_dir):
                     print_to_file = self.data_dir + print_to_file
                 else:
-                    os.mkdirs(self.data_dir)
+                    os.mkdir(self.data_dir)
                     print_to_file = self.data_dir + to_file
                 with open(print_to_file, 'a') as allocations_file:
                     allocations_file.write(text)
@@ -448,7 +448,7 @@ class Dojo(object):
                 if os.path.exists(self.data_dir):
                     print_to_file = self.data_dir + print_to_file
                 else:
-                    os.mkdirs(self.data_dir)
+                    os.mkdir(self.data_dir)
                     print_to_file = self.data_dir + to_file
                 with open(print_to_file, 'a') as allocations_file:
                     allocations_file.write(text)
