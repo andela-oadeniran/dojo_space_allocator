@@ -430,7 +430,7 @@ class Dojo(object):
                 if os.path.exists(self.data_dir):
                     print_to_file = self.data_dir + print_to_file
                 else:
-                    os.path.mkdirs(self.data_dir)
+                    os.mkdirs(self.data_dir)
                     print_to_file = self.data_dir + to_file
                 with open(print_to_file, 'a') as allocations_file:
                     allocations_file.write(text)
@@ -448,7 +448,7 @@ class Dojo(object):
                 if os.path.exists(self.data_dir):
                     print_to_file = self.data_dir + print_to_file
                 else:
-                    os.path.mkdirs(self.data_dir)
+                    os.mkdirs(self.data_dir)
                     print_to_file = self.data_dir + to_file
                 with open(print_to_file, 'a') as allocations_file:
                     allocations_file.write(text)
