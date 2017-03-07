@@ -171,14 +171,6 @@ class MyInteractive(cmd.Cmd):
         db_name = arg.get('<sqlite_database>')
         dojo.load_state(db_name)
 
-    @docopt_cmd
-    def do_pnt_allo(self, arg):
-        """Usage: pnt_allo [-o=filename]
-        """
-        print('here')
-        print (arg)
-        # pasr = arg.get()
-
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
 

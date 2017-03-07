@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 
 import os
@@ -16,86 +17,85 @@ import unittest
 
 class TestCreateRoom(unittest.TestCase):
     """Write Docstring here """
+    def setUp(self):
+        self.dojo = Dojo()
 
     def test_created_office_successfully(self):
-        dojo = Dojo()
-        initial_room_count = len(dojo.all_rooms)
-        blue_office = dojo.create_room("office", ['BLUE'])
-        value = Dojo.app_session['room']['BLUE']
+        initial_room_count = len(self.dojo.all_rooms)
+        self.dojo.create_room("office", ['BLUE'])
+        value = self.dojo.app_session['room']['BLUE']
         self.assertTrue(value)
         self.assertEqual(value.name, 'BLUE')
         self.assertEqual(value.purpose, 'office')
-        capture_print = sys.stdout.getvalue().strip()
-        self.assertEqual(capture_print, 'An Office called Blue has been successfully created!')
-        new_room_count = len(dojo.all_rooms)
+        new_room_count = len(self.dojo.all_rooms)
         room_count_diff = new_room_count - initial_room_count
         self.assertEqual(room_count_diff, 1)
 
     def test_created_living_space_successfully(self):
-        dojo = Dojo()
-        initial_room_count = len(dojo.all_rooms)
-        orange_living_space = dojo.create_room('living', ['ORANGE'])
-        value1 = Dojo.app_session['room']['ORANGE']
-        self.assertTrue(value1)
-        self.assertEqual(value1.name, 'ORANGE')
-        self.assertEqual(value1.purpose, 'living')
-        capture_print = sys.stdout.getvalue().strip()
-        self.assertEqual(capture_print, 'A Living Space called Orange has been successfully created!')
-        new_room_count = len(dojo.all_rooms)
+        initial_room_count = len(self.dojo.all_rooms)
+        self.dojo.create_room('living', ['ORANGE'])
+        value = self.dojo.app_session['room']['ORANGE']
+        self.assertTrue(value)
+        self.assertEqual(value.name, 'ORANGE')
+        self.assertEqual(value.purpose, 'living')
+        new_room_count = len(self.dojo.all_rooms)
         room_count_diff = new_room_count - initial_room_count
         self.assertEqual(room_count_diff, 1)
 
     def test_created_multi_offices_or_living_spaces(self):
-        dojo = Dojo()
-        initial_room_count = len(dojo.all_rooms)
-        multi_offices = dojo.create_room('office', ['Orion', 'Dev', 'fly'])
-        new_room_count = len(dojo.all_rooms)
+        initial_room_count = len(self.dojo.all_rooms)
+        self.dojo.create_room('office', ['Orion', 'Dev', 'fly'])
+        new_room_count = len(self.dojo.all_rooms)
         room_count_diff = new_room_count - initial_room_count
         self.assertEqual(room_count_diff, 3)
 
     def test_room_uniqueness(self):
-        dojo = Dojo()
-        initial_room_count = len(dojo.all_rooms)
-        amigo_office = dojo.create_room('office', ['amigo', 'amigo'])
-        new_room_count = len(dojo.all_rooms)
+        initial_room_count = len(self.dojo.all_rooms)
+        amigo_office = self.dojo.create_room('office', ['amigo', 'amigo'])
+        new_room_count = len(self.dojo.all_rooms)
         room_count_diff = new_room_count - initial_room_count
         self.assertEqual(room_count_diff, 1)
 
     def test_create_room_is_only_for_offices_living_spaces(self):
-        dojo = Dojo()
-        other_pupose_room = dojo.create_room('kitchen', ['Puerto'])
-        capture_print = sys.stdout.getvalue().strip()
-        self.assertEqual(capture_print[0:24], 'The Room type is invalid')
+        initial_room_count = len(self.dojo.all_rooms)
+        self.dojo.create_room('kitchen', ['Puerto'])
+        new_room_count = len(self.dojo.all_rooms)
+        room_count_diff = new_room_count - initial_room_count
+        self.assertEqual(room_count_diff, 0)
 
+    def tearDown(self):
+        del self.dojo
 
 class TestAddPerson(unittest.TestCase):
-    """ The test suite for the Dojo Method to Add people"""
+    """Test suite for the add_person Dojo functonality"""
+    def setUp(self):
+        self.dojo = Dojo()
 
-    def test_fellow_staff_added_successfully(self):
-        dojo = Dojo()
-        new_fellow = dojo.add_person('Ladi', 'Adeniran', 'Fellow')
-        value2 = Dojo.app_session['person'][1]
-        self.assertTrue(value2)
-        self.assertEqual('{0} {1}'.format(value2.fname, value2.lname), 'Ladi Adeniran')
-        self.assertEqual(value2.role, 'fellow')
-        capture_print1 = sys.stdout.getvalue()
-        self.assertEqual(capture_print1[0:48], 'Fellow Ladi Adeniran has been successfully added')
-        new_staff = dojo.add_person('Joshua', 'Ezekiel', 'staff')
-        value3 = Dojo.app_session['person'][2]
-        self.assertTrue(value3)
-        self.assertEqual(value3.fname, 'Joshua')
-        self.assertTrue(value3.role, 'staff')
+    def  test_create_fellow_successfully(self):
+        self.dojo.add_person('ladi', 'adeniran', 'fellow')
+        result = self.dojo.app_session['person'][1]
+        self.assertTrue(result)
+        self.assertEqual(result.fname, 'Ladi')
+        self.assertEqual(result.lname, 'Adeniran')
+        self.assertEqual(result.role, 'fellow')
 
-    def test_fellow_staff_rooms(self):
-        dojo = Dojo()
-        new_office = dojo.create_room('office', ['OPUS'])
-        new_living = dojo.create_room('living', ['OLYMPUS'])
-        fellow = dojo.add_person('Damisi', 'Otoloye', 'fellow', 'y')
-        staff = dojo.add_person('bayo', 'adesanya','staff')
-        value4 = Dojo.app_session['person'][3]
-        value5 = Dojo.app_session['person'][4]
-        self.assertEqual(value4.office, 'OPUS')
-        self.assertEqual(value4.living_space, 'OLYMPUS')
+    def test_create_staff_successfully(self):
+        self.dojo.add_person('Nas', 'Jones', 'staff')
+        result = self.dojo.app_session['person'][1]
+        self.assertTrue(result)
+        self.assertEqual(result.fname, 'Nas')
+        self.assertEqual(result.lname, 'Jones')
+        self.assertEqual(result.role, 'staff')
+
+    def test_add_fellow_staff_to_office_successfully(self):
+        self.dojo.create_room('office', ['Blue'])
+        self.add_person('Ab', 'Soul', 'fellow')
+        self.add_person('Jeremih', 'Camp', 'staff')
+        fellow = self.dojo.app_session['person'][1]
+        staff = self.dojo.app_session['person'][2]
+        self.assertTrue(fellow)
+        self.assertTrue(staff)
+
 
 
 if '__name__' == '__main__':

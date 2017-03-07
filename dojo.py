@@ -130,13 +130,18 @@ class Dojo(object):
                     cprint ('ROOM ({0}) PURPOSE ({1})'.
                         format( self.app_session['room'][room_key].name,self.app_session['room'][room_key].purpose.upper()), 'green')
                     cprint(' , '.join(occupants), 'green')
+                    return ', '.join(occupants)
+
                 else:
                     cprint ('{0} currently has no occupant(s)!'.
                             format(room_key), 'magenta')
+                    return ('{} currently has no occupant(s)'.format(room_key))
             else:
                 cprint('Room doesn\'t exist in Dojo!!!', 'red')
+                return 'Room name not in session.'
         else:
             cprint('There are currently no rooms in Dojo.', 'magenta')
+            return 'No rooms in Dojo.'
 
     def print_allocations(self , to_file = 'n'):
         # print_allocations take akey word argument to_file and defaults to 'n'
@@ -144,6 +149,7 @@ class Dojo(object):
         # not have it stored.
         if (self.all_rooms):
             for room in self.all_rooms:
+                # check to see if room contains occupants
                 if (room.occupants):
                     members = ', '.join(
                         str(person).title() for person in room.occupants)
@@ -160,15 +166,22 @@ class Dojo(object):
                     file_path = self.data_dir + to_file
                 cprint('Successfully written Allocations to {0}.\n'.
                        format(file_path), 'green')
+                return file_path
+            else:  
+                return 'Successfully printed allocations to screen'
+                
+
         else:
             cprint('There are currently no rooms in Dojo', 'magenta')
+            return ('There are currently no rooms in Dojo.')
 
     def print_unallocated(self, to_file='n'):
         to_file_living = to_file
         if (self.people):
             no_office_allocated_list = [person for person in self.people if not person.office]
-            no_living_space_allocated_list = [person for person in self.people if person.role =='fellow' and (person.wants_accommodation=='y' or 'Y') and not person.living_space]
-            if (no_office_allocated_list or no_living_space_allocated_list):
+            list_of_fellows = [person for person in self.people if person.role=='fellow']
+            no_living_space_allocated_list = [person for person in list_of_fellows if person.wants_accommodation=='y' and not person.living_space]
+            if (no_office_allocated_list) or (no_living_space_allocated_list):
                 cprint('ID       Person DETAILS', 'green')
                 if no_office_allocated_list:
                     for person in no_office_allocated_list:
@@ -181,7 +194,7 @@ class Dojo(object):
                             file_path =self.data_dir + to_file
                         cprint('Successfully written person(s) that need office spaces {}'.format(file_path), 'green')
 
-                if no_living_space_allocated_list:
+                elif no_living_space_allocated_list:
                     for person in no_living_space_allocated_list:
                         self.print_unallocated_func(person, 'living', to_file)
                     if to_file not in ('N', 'n'):
@@ -191,10 +204,13 @@ class Dojo(object):
                         else:
                             file_path =self.data_dir + to_file
                         cprint('Successfully written person(s) that need living spaces {}'.format(file_path), 'green')
+                return 'Printed Allocation'
             else:
                 cprint('There are no unallocated people', 'magenta')
+                return None
         else:
-            cprint('Person(s) not allocated into Dojo rooms yet', 'red')
+            cprint('No person in the System Yet!', 'red')
+            return 'No person in the System Yet!'
 
     def people_id(self):
         if self.people:
@@ -324,7 +340,7 @@ class Dojo(object):
                 self.all_rooms = loaded_app_session_data[1]
                 self.people = loaded_app_session_data[2]
                 self.people_keys = [key for key in self.app_session['person'].keys()]
-                cprint('state loaded from {}'.format(db_name), 'green ')
+                cprint('state loaded from {}'.format(db_name), 'green')
             else:
                 cprint ('The database is invalid and does not contain'
                 'data from the Applications\'s saved state.', 'red')
