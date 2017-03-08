@@ -29,12 +29,12 @@
  9. save_state [--db sqlitedatabase] `saves the session data into an sqlite database`
  10. load_state sqlite-database-name `loads data from the database name specified.`
 
- ##Sample Usage
+ ####Sample Usage
  1. create_room office Idanre Akure Baga
  
 
 
- # All Databases and text file used in the application are stored in the .dojo_data in the users Home Directory.
+ #### All Databases and text file used in the application are stored in the .dojo_data in the users Home Directory.
  #Users can create this directory but the Application Automatically create it, when commands that use text or db files are invoked except load_state. That requires a valid data base to be in the directory.
 
- ##`To allow the load people test to pass copy the people.txt to the valid folder as specified. The people.txt is in the root of the project`
+ ####`To allow the load people test to pass copy the people.txt to the valid folder as specified. The people.txt is in the root of the project`
