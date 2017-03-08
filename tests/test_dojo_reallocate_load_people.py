@@ -69,7 +69,7 @@ class TestLoadPeople(unittest.TestCase):
 	def  test_load_people_from_file_successfully(self):
 		result= self.dojo.app_session['person']
 		self.assertFalse(result)
-
+        
 		self.dojo.load_people('people.txt')
 		result = self.dojo.app_session['person']
 		self.assertTrue(result)
