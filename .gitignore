@@ -9,3 +9,4 @@ models/dojo.sublime-workspace
 *.pyc
 .DS_STORE
 .coverage
+/tests/.coverage
