@@ -10,7 +10,6 @@ import pickle
 import termcolor
 from termcolor import cprint
 
-
 dbdir = os.path.abspath(os.path.join(os.path.dirname(__file__), './db'))
 modelsdir = os.path.abspath(
     os.path.join(os.path.dirname(__file__),
@@ -31,7 +30,7 @@ class Dojo(object):
     People's names might not be unque but the ids here are.
     Room names are unique and are used as the room identifier
     """
-    # Class instance variables and structures to hold app data
+    # instance variables and structures to hold app data
     def __init__(self):
         self.app_session = {'room': {}, 'person': {}}
         self.all_rooms = []
@@ -399,7 +398,6 @@ class Dojo(object):
             return room
         return None
 
-
     def allocate_person_to_room(self, person, room):
         self.add_person_to_room(person, room)
         if room.purpose == "office":
@@ -407,11 +405,9 @@ class Dojo(object):
         elif room.purpose == "living":
             person.living_space = room.name
 
-
     def append_room_to_session_data(self, room_key, room_object):
         self.all_rooms.append(room_object)
         self.app_session['room'][room_key] = room_object
-
 
     def append_person_to_session_data(self,person_object):
         # function to help put a person to apllication session
@@ -457,8 +453,7 @@ class Dojo(object):
                     print_to_file = self.data_dir + print_to_file
                 with open(print_to_file, 'a') as allocations_file:
                     allocations_file.write(text)
-                    allocations_file.close()
-                
+                    allocations_file.close()     
         else:
             # rooms with no occupants
             text = ('{0}\n{1}\n{0} has no occupants yet\n'.format(room.name, dash_lines))
