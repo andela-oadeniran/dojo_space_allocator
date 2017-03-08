@@ -4,11 +4,11 @@
 
 ##            Dojo Space Allocator.
 
-### The Application and what it does?
+###The Application and what it does?
 1. A Console Application that helps allocate an office space, room space or both.
 2. The Dojo is one of Andela's facility in Kenya and it inspired the Application.
 
-###  How to Use
+###How to Use
 1. install python3, virtualenvwrapper.
 2. Clone the repository or download the zip file. [git clone https://github.com/andela-oadeniran/dojo_space_allocator.git]
 3. create a new virtualenv `mkvirtualenv dojoenv`
@@ -16,11 +16,9 @@
 5. install application's requirements with pip install -r requirements.txt
 6. Create a .dojo_data folder/directory on your home page.
 
- 
+ #### NOTE: All text and databases will be created or stored here ~/.dojo.data and you can only load files stored there
 
-###  NOTE: All text and databases will be created or stored here ~/.dojo.data and you can only load files stored there
-
-###   Commands
+###Commands
  1. `create_room room_type room_name` Use the command to create a room.
  2. `add_person fname lname STAFF/FELLOW [wants-accommodation]`  Used to add a person to the System and if available an office and for a fellow who wants accommodation a Living Space.
  3. `print_room room_name` To print the occupants in a particular room
