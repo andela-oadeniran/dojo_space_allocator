@@ -44,6 +44,7 @@ class Dojo(object):
         # check if the purpose is either living or an office
         # and also check for uniqueness.
         if purpose.lower() in ('office', 'living'):
+            # if room purpose given is office
             if purpose.lower() == 'office':
                 for room_name in room_names:
                     if (room_name.upper() in self.app_session['room'].keys()):
@@ -51,13 +52,16 @@ class Dojo(object):
                             'Use a different name'.format(room_name.upper()), 'red')
                     else:
                         room_key = room_name.upper()
+                        # create an Office class instance of each argument supplied
                         room = Office(room_key)
+                        # append the room to app session and print appropriate messages
                         self.append_room_to_session_data(room_key ,room)
                         cprint('An Office called {0} ' 
                             'has been successfully created!'.
                             format(room_key), 'green')
             else:
                 for room_name in room_names:
+                    # each room name is unique. print appropriate error message
                     if (room_name.upper() in self.app_session['room'].keys()):
                         cprint('Room name already exists,'
                             ' Use a different name', 'red' )
@@ -79,6 +83,7 @@ class Dojo(object):
             if role.lower() == 'fellow':
                 # create fellow from class Fellow
                 fellow = Fellow(fname, lname, wants_accommodation)
+                # check a random available office space
                 available_office = self.get_available_room('office')
                 if available_office:
                     self.allocate_person_to_room(fellow, available_office)
@@ -87,7 +92,10 @@ class Dojo(object):
                     available_living = self.get_available_room('living')
                     if available_living:
                         self.allocate_person_to_room(fellow, available_living)
+                # append person to session with
                 self.append_person_to_session_data(fellow)
+                # print appropriate messages when the fellow has or not an office
+                # also if the fellow wants accommodation, if he has or not.
                 cprint('Fellow {0} {1} has been successfully added.'.format(
                     fname.title(), lname.title()), 'green')
                 if fellow.office:
@@ -104,6 +112,7 @@ class Dojo(object):
                         cprint('There are currently no vacant living Spaces in Dojo, Create'
                             ' a living Space and reallocate the Fellow to the Room.', 'magenta')
             else:
+                # make an instance of the Staff class
                 staff = Staff(fname, lname)
                 available_office = self.get_available_room('office')
                 if available_office:
@@ -121,17 +130,20 @@ class Dojo(object):
             cprint('You can only add fellows and staff!!!', 'red')
 
     def print_room(self, room_name):
+        # check if room exists in dojo
         if (self.all_rooms):
             room_key = room_name.upper()
+            # check if the room name exists in dojo
             if room_key in self.app_session['room'].keys():
                 occupants=  self.app_session['room'][room_key].occupants
+                # check to see if the room has occupants
                 if occupants:
                     occupants = [occupant.pname for occupant in occupants]
                     cprint ('ROOM ({0}) PURPOSE ({1})'.
                         format( self.app_session['room'][room_key].name,self.app_session['room'][room_key].purpose.upper()), 'green')
                     cprint(' , '.join(occupants), 'green')
                     return ', '.join(occupants)
-
+                # if the room has o occupants print and return this
                 else:
                     cprint ('{0} currently has no occupant(s)!'.
                             format(room_key), 'magenta')
@@ -178,9 +190,11 @@ class Dojo(object):
     def print_unallocated(self, to_file='n'):
         to_file_living = to_file
         if (self.people):
+            # make a list of fellows and staff with no offices
+            # make a list of fellows that want accommodation but have none
             no_office_allocated_list = [person for person in self.people if not person.office]
-            list_of_fellows = [person for person in self.people if person.role=='fellow']
-            no_living_space_allocated_list = [person for person in list_of_fellows if person.wants_accommodation=='y' and not person.living_space]
+            list_of_fellows = [person for person in self.people if person.role =='fellow']
+            no_living_space_allocated_list = [person for person in list_of_fellows if person.wants_accommodation.lower()=='y' and not person.living_space]
             if (no_office_allocated_list) or (no_living_space_allocated_list):
                 cprint('ID       Person DETAILS', 'green')
                 if no_office_allocated_list:
@@ -194,7 +208,7 @@ class Dojo(object):
                             file_path =self.data_dir + to_file
                         cprint('Successfully written person(s) that need office spaces {}'.format(file_path), 'green')
 
-                elif no_living_space_allocated_list:
+                if no_living_space_allocated_list:
                     for person in no_living_space_allocated_list:
                         self.print_unallocated_func(person, 'living', to_file)
                     if to_file not in ('N', 'n'):
@@ -213,6 +227,7 @@ class Dojo(object):
             return 'No person in the System Yet!'
 
     def people_id(self):
+        # This allows user to easily check for a person's id.
         if self.people:
             cprint('PERSON-ID          PERSON-DETAILS', 'green')
             for index, person_key in enumerate(self.people_keys):
@@ -315,7 +330,9 @@ class Dojo(object):
         if os.path.exists(self.data_dir):
             db_name = self.data_dir  + db_name
         else:
-            self.data_dir = os.mkdir(self.home + '/.dojo_data/')
+            os.mkdir(self.home + '/.dojo_data/')
+            self.data_dir = self.home + '/.dojo_data/'
+            print(self.data_dir)
             db_name = self.data_dir + db_name
         # you don't want to save an empty session!!!
         if self.all_rooms or self.people:
@@ -326,9 +343,11 @@ class Dojo(object):
             db = DojoDb(db_name)
             db.create_tables()
             db.save_data(app_session_pickle)
+            return 'data persisted'
 
         else:
             cprint('Session has no data to persist to the database.', 'magenta')
+            return ('Session not persisted, No data in app_session')
 
     def load_state(self, db_name):
         # check extension if not create it.
@@ -341,6 +360,7 @@ class Dojo(object):
         if (os.path.isfile(db_name)):
             db = DojoDb(db_name)
             app_session_pickle = db.get_data()
+            # check if it returns a valid session else print and return error message
             if app_session_pickle:
                 loaded_app_session_data = pickle.loads(app_session_pickle)
                 self.app_session = loaded_app_session_data[0]
@@ -350,7 +370,8 @@ class Dojo(object):
                 cprint('state loaded from {}'.format(db_name), 'green')
             else:
                 cprint ('The database is invalid and does not contain'
-                'data from the Applications\'s saved state.', 'red')
+                ' data from the Applications\'s saved state.', 'red')
+                return 'Bad Database given'
         else:
             cprint('Not a valid database check home/.dojo_data for the available databases', 'red')
 
@@ -393,6 +414,7 @@ class Dojo(object):
 
 
     def append_person_to_session_data(self,person_object):
+        # function to help put a person to apllication session
         self.people.append(person_object)
         person_key = len(self.people)
         person_object.id = person_key
@@ -410,7 +432,8 @@ class Dojo(object):
             if os.path.exists(self.data_dir):
                 print_to_file = self.data_dir + print_to_file
             else:
-                os.path.makedirs(self.data_dir)
+                # create the directory if not exist.
+                os.mkdir(self.data_dir)
                 print_to_file = self.data_dir + print_to_file
             with open(print_to_file, 'a') as unallocated_file:
                 unallocated_file.write(text)
@@ -431,7 +454,7 @@ class Dojo(object):
                     print_to_file = self.data_dir + print_to_file
                 else:
                     os.mkdir(self.data_dir)
-                    print_to_file = self.data_dir + to_file
+                    print_to_file = self.data_dir + print_to_file
                 with open(print_to_file, 'a') as allocations_file:
                     allocations_file.write(text)
                     allocations_file.close()
@@ -449,7 +472,7 @@ class Dojo(object):
                     print_to_file = self.data_dir + print_to_file
                 else:
                     os.mkdir(self.data_dir)
-                    print_to_file = self.data_dir + to_file
+                    print_to_file = self.data_dir + print_to_file
                 with open(print_to_file, 'a') as allocations_file:
                     allocations_file.write(text)
                     allocations_file.close()

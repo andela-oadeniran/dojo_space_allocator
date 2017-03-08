@@ -6,3 +6,4 @@ flake8
 termcolor
 pyfiglet
 coverage
+python-coveralls

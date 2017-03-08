@@ -6,7 +6,7 @@ class Room(object):
     fellows and staff of Andela at The Dojo"""
 
     def __init__(self, purpose, name):
-        self.name = name
+        self.name = name.upper()
         self.purpose = purpose
         self.occupants = []
 

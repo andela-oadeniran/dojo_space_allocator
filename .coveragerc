@@ -5,4 +5,8 @@ show_missing = True
 [run]
 omit =
     */python?.?/*
-   
+    termcolor.py
+    sqlite3.py
+    sqlite3/dbapi2.py 
+       
+    

@@ -24,6 +24,10 @@ class TestPersonClass(unittest.TestCase):
         self.assertEqual(new_person.lname, 'Adeniran')
         self.assertEqual(new_person.role, 'software developer')
 
+    def test_person_repr_method(self):
+        new_person = Person(fname='James', lname='Blunt', role='Singer')
+        self.assertEqual(str(new_person), 'James Blunt')
+
 
 class TestFellowClass(unittest.TestCase):
     """Test suite for the Fellow Model"""
@@ -38,6 +42,10 @@ class TestFellowClass(unittest.TestCase):
         self.assertNotIsInstance(new_fellow, Staff)
         self.assertIsInstance(new_fellow, Fellow)
 
+    def test_fellow_repr(self):
+        new_fellow = Fellow(fname='Ivan', lname='Lotti')
+        self.assertEqual(str(new_fellow), 'Ivan Lotti')
+
 
 class TestStaffClass(unittest.TestCase):
     """Test suite for the Staff Model"""
@@ -51,6 +59,10 @@ class TestStaffClass(unittest.TestCase):
         self.assertIsInstance(new_staff, Person)
         self.assertNotIsInstance(new_staff, Fellow)
         self.assertIsInstance(new_staff, Staff)
+
+    def test_staff_repr(self):
+        new_staff = Staff(fname='mark', lname='andrew')
+        self.assertEqual(str(new_staff), 'Mark Andrew')
 
 
 if '__name__' == '__main__':

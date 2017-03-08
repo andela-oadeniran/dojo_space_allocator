@@ -66,8 +66,15 @@ class TestLoadPeople(unittest.TestCase):
 	def setUp(self):
 		self.dojo = Dojo()
 
-	def  test_load_file_exists_in_the_right_folder(self):
-		 pass
+	def  test_load_people_from_file_successfully(self):
+		result= self.dojo.app_session['person']
+		self.assertFalse(result)
+
+		self.dojo.load_people('people.txt')
+		result = self.dojo.app_session['person']
+		self.assertTrue(result)
+	
+
 
 
 
