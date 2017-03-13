@@ -6,7 +6,7 @@ from person import Person
 class Fellow(Person):
     """The Fellow class inherits from the Person Class"""
 
-    def __init__(self, fname, lname, wants_accommodation='n'):
+    def __init__(self, fname, lname, wants_accommodation):
         super(Fellow, self).__init__(fname=fname, lname=lname, role='fellow')
         self.wants_accommodation = wants_accommodation
         self.office = None

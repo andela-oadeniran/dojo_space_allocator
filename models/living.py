@@ -8,5 +8,5 @@ class LivingSpace(Room):
     it has a maximum size of four(4) fellows'''
 
     def __init__(self, name):
-        super(LivingSpace, self).__init__(purpose='living', name=name)
+        super(LivingSpace, self).__init__(room_type='living', name=name)
         self.max_size = 4

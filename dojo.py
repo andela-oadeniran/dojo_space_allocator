@@ -3,7 +3,7 @@
 # import modules. sys, os, models and db modules to the main application.
 import os
 from os.path import expanduser
-import random
+# import random
 import sqlite3
 import pickle
 # import termcolor
@@ -15,8 +15,7 @@ from context import RoomManager
 from context import PersonManager
 
 room_manager = RoomManager()
-
-
+person_manager = PersonManager()
 
 class Dojo(object):
     """
@@ -36,67 +35,32 @@ class Dojo(object):
             room_manager.check_valid_room_type(room_type)
             room_class = room_manager.return_living_office_class(room_type)
             for room_name in room_names:
+                room_manager.check_room_name(room_name)
                 if not room_manager.check_room_name_uniqueness(room_name,
                                                                self.all_rooms):
+
                     room = room_class(room_name)
                     room_manager.add_room_to_session(room, self.all_rooms)
                 else:
                     print('Not unique')
+        except TypeError:
+            print('Invalid room type')
         except ValueError:
-            print('Error')
-       
-    def add_person(self, fname, lname, role, wants_accommodation = 'n'):
-        # check role of the person supplied must either be a staff or a fellow
-        if role.lower() in ('fellow', 'staff'):
-            if role.lower() == 'fellow':
-                # create fellow from class Fellow
-                fellow = Fellow(fname, lname, wants_accommodation)
-                # check a random available office space
-                available_office = self.get_available_room('office')
-                if available_office:
-                    self.allocate_person_to_room(fellow, available_office)
-                if wants_accommodation in ('y', 'Y'):
-                    # if a fellow wants accommodation check for available rooms and return it.
-                    available_living = self.get_available_room('living')
-                    if available_living:
-                        self.allocate_person_to_room(fellow, available_living)
-                # append person to session with
-                self.append_person_to_session_data(fellow)
-                # print appropriate messages when the fellow has or not an office
-                # also if the fellow wants accommodation, if he has or not.
-                cprint('Fellow {0} {1} has been successfully added.'.format(
-                    fname.title(), lname.title()), 'green')
-                if fellow.office:
-                    cprint('{0} has been allocated the Office {1}'.
-                        format(fellow.fname.title(), fellow.office), 'green')
-                else:
-                    cprint('There are currently no vacant office Spaces in Dojo.'
-                        ' Create offices and reallocate the Fellow.', 'magenta')
-                if wants_accommodation in ('y', 'Y'):
-                    if fellow.living_space:
-                        cprint('{0} has been allocated the Living space {1}'.
-                            format(fellow.fname.title(), fellow.living_space), 'green')
-                    else:
-                        cprint('There are currently no vacant living Spaces in Dojo, Create'
-                            ' a living Space and reallocate the Fellow to the Room.', 'magenta')
-            else:
-                # make an instance of the Staff class
-                staff = Staff(fname, lname)
-                available_office = self.get_available_room('office')
-                if available_office:
-                    self.allocate_person_to_room(staff, available_office)
-                self.append_person_to_session_data(staff)
-                cprint('Staff {0} {1} has been successfully added.'.
-                    format(fname.title(), lname.title()), 'green')
-                if staff.office:
-                    cprint('{0} has been allocated the Office {1}'.
-                        format(staff.fname.title(), staff.office), 'green')
-                else:
-                    cprint('There are currently no vacant office spaces in Dojo.'
-                        ' Create offices and reallocate the Staff.', 'magenta')
-        else:
-            cprint('You can only add fellows and staff!!!', 'red')
+            print('Room name cannot be an empty string')
 
+    def add_person(self, fname, lname, role, wants_accommodation=None):
+        # check role of the person supplied must either be a staff or a fellow
+        try:
+            person_manager.check_valid_person_role(role)
+            person_class = person_manager.return_staff_fellow_class(role)
+            person = person_class(fname, lname, wants_accommodation)
+            person_manager.add_person_to_session(person, )
+
+        except TypeError:
+            print('Invalid Type')
+        except ValueError:
+            print('invalid firstname and/or lastname')
+    
     def print_room(self, room_name):
         # check if room exists in dojo
         if (self.all_rooms):
@@ -446,5 +410,5 @@ class Dojo(object):
 
 
 dojo = Dojo()
-dojo.create_room('offie', ['Be'])
+dojo.create_room('ving',['Blue'])
 print(dojo.all_rooms)
