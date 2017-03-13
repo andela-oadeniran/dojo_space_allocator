@@ -1,5 +1,6 @@
+[![Build Status](https://travis-ci.org/andela-oadeniran/dojo_space_allocator.svg?branch=ladi)](https://travis-ci.org/andela-oadeniran/dojo_space_allocator)
 [![Coverage Status](https://coveralls.io/repos/github/andela-oadeniran/dojo_space_allocator/badge.svg)](https://coveralls.io/github/andela-oadeniran/dojo_space_allocator)
-[![Build Status](https://travis-ci.org/andela-oadeniran/dojo_space_allocator.svg?branch=master)](https://travis-ci.org/andela-oadeniran/dojo_space_allocator)
+
 
 
 ##            Dojo Space Allocator.
@@ -30,7 +31,7 @@
  9. `save_state [--db sqlitedatabase]` saves the session data into an sqlite database
  10. `load_state sqlite-database-name` loads data from the database name specified.
 
- 
+
  > All Databases and text file used in the application are stored in the .dojo_data in the users Home Directory.
  > Users can create this directory but the Application Automatically create it, when commands that use text or db files are invoked except load_state. That requires a valid data base to be in the directory.
 

@@ -3,79 +3,48 @@
 # import modules. sys, os, models and db modules to the main application.
 import os
 from os.path import expanduser
-import sys
 import random
 import sqlite3
 import pickle
-import termcolor
+# import termcolor
 from termcolor import cprint
+# from context import LivingSpace
+# from context import Office
+# from context import Room
+from context import RoomManager
+from context import PersonManager
 
-dbdir = os.path.abspath(os.path.join(os.path.dirname(__file__), './db'))
-modelsdir = os.path.abspath(
-    os.path.join(os.path.dirname(__file__),
-                 './models'))
+room_manager = RoomManager()
 
-sys.path.append(dbdir)
-sys.path.append(modelsdir)
-
-from db.dojodb import DojoDb
-from models.office import Office
-from models.living import LivingSpace
-from models.staff import Staff
-from models.fellow import Fellow
 
 
 class Dojo(object):
-    """ The Dojo class Docstring
-    People's names might not be unque but the ids here are.
-    Room names are unique and are used as the room identifier
     """
-    # instance variables and structures to hold app data
+    The class contains all rooms and persons in the system
+    """
+
     def __init__(self):
-        self.app_session = {'room': {}, 'person': {}}
+        # constructor method
         self.all_rooms = []
         self.people = []
-        self.people_keys = []
         self.home = expanduser('~')
         self.data_dir = self.home + '/.dojo_data/'
 
-    def create_room(self, purpose, room_names):
-        # check if the purpose is either living or an office
-        # and also check for uniqueness.
-        if purpose.lower() in ('office', 'living'):
-            # if room purpose given is office
-            if purpose.lower() == 'office':
-                for room_name in room_names:
-                    if (room_name.upper() in self.app_session['room'].keys()):
-                        cprint('{} already exists. '
-                            'Use a different name'.format(room_name.upper()), 'red')
-                    else:
-                        room_key = room_name.upper()
-                        # create an Office class instance of each argument supplied
-                        room = Office(room_key)
-                        # append the room to app session and print appropriate messages
-                        self.append_room_to_session_data(room_key ,room)
-                        cprint('An Office called {0} ' 
-                            'has been successfully created!'.
-                            format(room_key), 'green')
-            else:
-                for room_name in room_names:
-                    # each room name is unique. print appropriate error message
-                    if (room_name.upper() in self.app_session['room'].keys()):
-                        cprint('Room name already exists,'
-                            ' Use a different name', 'red' )
-                    else:
-                        room_key = room_name.upper()
-                        room = LivingSpace(room_key)
-                        self.append_room_to_session_data(room_key, room)
-                        cprint('A Living Space called {} '
-                            'has been successfully created!'.format(
-                                room_key), 'green')
-        else:
-            cprint('The Room type {} is invalid, '
-                'A room in Dojo can either be an ' 
-                'office or a living Space.'.format(purpose), 'red')
-
+    def create_room(self, room_type, room_names):
+        # The class calls on the room_manager methods to create a rooms.
+        try:
+            room_manager.check_valid_room_type(room_type)
+            room_class = room_manager.return_living_office_class(room_type)
+            for room_name in room_names:
+                if not room_manager.check_room_name_uniqueness(room_name,
+                                                               self.all_rooms):
+                    room = room_class(room_name)
+                    room_manager.add_room_to_session(room, self.all_rooms)
+                else:
+                    print('Not unique')
+        except ValueError:
+            print('Error')
+       
     def add_person(self, fname, lname, role, wants_accommodation = 'n'):
         # check role of the person supplied must either be a staff or a fellow
         if role.lower() in ('fellow', 'staff'):
@@ -476,5 +445,6 @@ class Dojo(object):
 
 
 
-
-
+dojo = Dojo()
+dojo.create_room('offie', ['Be'])
+print(dojo.all_rooms)

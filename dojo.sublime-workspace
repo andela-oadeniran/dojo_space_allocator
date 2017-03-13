@@ -1,0 +1,916 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Roo",
+				"RoomManager\t(roommanager.py)"
+			],
+			[
+				"room",
+				"room_type"
+			],
+			[
+				"MANAGER",
+				"MANAGER_DIR"
+			],
+			[
+				"ch",
+				"check_room_type\t(rooms_manager.py)"
+			],
+			[
+				"r",
+				"rooms_manager\tmodule"
+			],
+			[
+				"roo",
+				"room_type"
+			],
+			[
+				"v",
+				"virtualenvs"
+			],
+			[
+				"a",
+				"append"
+			],
+			[
+				"ROO",
+				"ROOT_DIR"
+			],
+			[
+				"ex",
+				"exists\tfunction"
+			],
+			[
+				"load",
+				"load_state"
+			],
+			[
+				"new",
+				"new_staff"
+			],
+			[
+				"asser",
+				"assertEqual"
+			],
+			[
+				"Li",
+				"LivingSpace"
+			],
+			[
+				"ass",
+				"assertTrue\tfunction"
+			],
+			[
+				"loa",
+				"load_state\tfunction"
+			],
+			[
+				"sa",
+				"save_state\tfunction"
+			],
+			[
+				"load_",
+				"load_people\t(dojo.py)"
+			],
+			[
+				"re",
+				"reallocate_person\tfunction"
+			],
+			[
+				"ap",
+				"add_person"
+			],
+			[
+				"real",
+				"reallocate_person"
+			],
+			[
+				"app",
+				"app_session\tstatement"
+			],
+			[
+				"li",
+				"living_space\t(dojo.py)"
+			],
+			[
+				"addPers",
+				"add_person"
+			],
+			[
+				"init",
+				"initial_room_count"
+			],
+			[
+				"wants",
+				"wants_accommodation"
+			],
+			[
+				"list",
+				"list_of_fellows"
+			],
+			[
+				"print",
+				"print_unallocated\tfunction"
+			],
+			[
+				"allo",
+				"allocations_line"
+			],
+			[
+				"all",
+				"allocations"
+			],
+			[
+				"line",
+				"linecache"
+			],
+			[
+				"assert",
+				"assertEqual\tfunction"
+			],
+			[
+				"prit",
+				"print_allocations\tfunction"
+			],
+			[
+				"Test",
+				"TestCase"
+			],
+			[
+				"currnet",
+				"currently\t(dojo.py)"
+			],
+			[
+				"pr",
+				"print_room\tstatement"
+			],
+			[
+				"std",
+				"stdout\tinstance"
+			],
+			[
+				"docp",
+				"docopt_cmd"
+			],
+			[
+				"data",
+				"data_dir"
+			],
+			[
+				"file",
+				"file_path"
+			],
+			[
+				"per",
+				"person_object"
+			],
+			[
+				"tet",
+				"text_file\tstatement"
+			],
+			[
+				"perso",
+				"person_object"
+			],
+			[
+				"to_file",
+				"to_file_living"
+			],
+			[
+				"is",
+				"isfile"
+			],
+			[
+				"db",
+				"db_dir"
+			],
+			[
+				"people_",
+				"people_keys_list"
+			],
+			[
+				"app_session_d",
+				"app_session_dictionary"
+			],
+			[
+				"chec",
+				"check_room_size"
+			],
+			[
+				"al",
+				"all_rooms"
+			],
+			[
+				"max",
+				"max_size"
+			],
+			[
+				"occ",
+				"occupants"
+			],
+			[
+				"unall",
+				"unallocated_file"
+			],
+			[
+				"una",
+				"unallocated_file"
+			],
+			[
+				"d",
+				"data_dir"
+			],
+			[
+				"m",
+				"makedirs"
+			],
+			[
+				"exist",
+				"exists"
+			],
+			[
+				"no_",
+				"no_living_space_allocated_list"
+			],
+			[
+				"no",
+				"no_office_allocation_list"
+			],
+			[
+				"offi",
+				"office_unallocated_people"
+			],
+			[
+				"for",
+				"format"
+			],
+			[
+				"dat",
+				"data_dir\tstatement"
+			],
+			[
+				"allocat",
+				"allocations_file"
+			],
+			[
+				"to",
+				"to_file"
+			],
+			[
+				"occu",
+				"occupant"
+			],
+			[
+				"liv",
+				"living_space\tstatement"
+			],
+			[
+				"int",
+				"intro"
+			],
+			[
+				"db_",
+				"db_dir"
+			],
+			[
+				"h",
+				"HOME"
+			],
+			[
+				"create",
+				"create_room\t(app.py)"
+			],
+			[
+				"save",
+				"save_state\t(app.py)"
+			],
+			[
+				"add",
+				"add_person\t(app.py)"
+			],
+			[
+				"peop",
+				"people_id\t(app.py)"
+			],
+			[
+				"sav",
+				"save_state\t(app.py)"
+			],
+			[
+				"peo",
+				"people\tstatement"
+			],
+			[
+				"pri",
+				"print_allocations\t(dojo.py)"
+			],
+			[
+				"sva",
+				"save_state"
+			],
+			[
+				"cre",
+				"create_room"
+			],
+			[
+				"crea",
+				"create_room\t(dojo.py)"
+			],
+			[
+				"pickl",
+				"pickle.dumps"
+			],
+			[
+				"sqli",
+				"sqlite3.Binary"
+			],
+			[
+				"pi",
+				"pickle.dumps"
+			],
+			[
+				"cur",
+				"cursor"
+			],
+			[
+				"co",
+				"connection"
+			],
+			[
+				"cr",
+				"create_room\t(dojo.py)"
+			],
+			[
+				"create_",
+				"create_tables\t(dojodb.py)"
+			],
+			[
+				"Dojo",
+				"Dojo.app_session"
+			],
+			[
+				"livi",
+				"living_space"
+			],
+			[
+				"Use",
+				"Users"
+			],
+			[
+				"text",
+				"text_file"
+			],
+			[
+				"room_",
+				"room_name"
+			],
+			[
+				"pers",
+				"person_id"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "manager/roommanager.py",
+			"settings":
+			{
+				"buffer_size": 165,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "manager/context.py",
+			"settings":
+			{
+				"buffer_size": 358,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "dojo.py",
+			"settings":
+			{
+				"buffer_size": 23918,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+			"settings":
+			{
+				"buffer_size": 20799,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "ena",
+		"selected_items":
+		[
+			[
+				"ena",
+				"Package Control: Enable Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"p",
+				"Package Control: Disable Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"pac",
+				"Package Control: List Packages"
+			]
+		],
+		"width": 432.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/ladipo/projects/dojo_space_allocator",
+		"/Users/ladipo/projects/dojo_space_allocator/manager",
+		"/Users/ladipo/projects/dojo_space_allocator/tests"
+	],
+	"file_history":
+	[
+		"/Users/ladipo/projects/dojo_space_allocator/tests/test_dojo_create_room_add_person.py",
+		"/Users/ladipo/projects/dojo_space_allocator/tests/test_dojo_room_manager.py",
+		"/Users/ladipo/projects/dojo_space_allocator/tests/context.py",
+		"/Users/ladipo/projects/dojo_space_allocator/manager/context.py",
+		"/Users/ladipo/.virtualenvs/wgerenv/lib/python3.6/site-packages/django/__init__.py",
+		"/Users/ladipo/.virtualenvs/wgerenv/lib/python3.6/site-packages/django/conf/__init__.py",
+		"/Users/ladipo/projects/wger_pygo/requirements.txt",
+		"/Users/ladipo/projects/wger_pygo/wger/settings_global.py",
+		"/Users/ladipo/projects/wger_pygo/tasks.py",
+		"/Users/ladipo/projects/wger_pygo/requirements_devel.txt",
+		"/Users/ladipo/projects/wger_pygo/wger/core/templatetags/wger_extras.py",
+		"/Users/ladipo/projects/wger_pygo/wger/gym/views/gym.py",
+		"/Users/ladipo/projects/wger_pygo/wger/gym/urls.py",
+		"/Users/ladipo/projects/wger_pygo/wger/urls.py",
+		"/Users/ladipo/projects/wger_pygo/wger/core/models.py",
+		"/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/Virtualenv/Virtualenv.sublime-settings",
+		"/Users/ladipo/dojo_space_allocator/manager/__init__.py",
+		"/Users/ladipo/dojo_space_allocator/dojo.sublime-project",
+		"/Users/ladipo/dojo_space_allocator/.gitignore",
+		"/Users/ladipo/dojo_space_allocator/tests/test_dojo_create_room_add_person.py",
+		"/Users/ladipo/dojo_space_allocator/dojo.py",
+		"/Users/ladipo/dojo_space_allocator/tests/context.py",
+		"/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/Python PEP8 Autoformat/pep8_autoformat.sublime-settings",
+		"/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/User/pep8_autoformat.sublime-settings",
+		"/Users/ladipo/projects/dojo.sublime-project",
+		"/Users/ladipo/sublimeprojects/dojo.sublime-project",
+		"/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/Python PEP8 Autoformat/Default (OSX).sublime-keymap",
+		"/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/PyYapf Python Formatter/PyYapf.sublime-settings",
+		"/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/User/PyYapf.sublime-settings",
+		"/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/AutoPEP8/AutoPep8.sublime-settings",
+		"/Users/ladipo/projects/dojo_space_allocator/models/office.py",
+		"/Users/ladipo/projects/dojo_space_allocator/models/living.py",
+		"/Users/ladipo/projects/dojo_space_allocator/models/fellow.py",
+		"/Users/ladipo/projects/dojo_space_allocator/models/room.py",
+		"/Users/ladipo/projects/dojo_space_allocator/app.py",
+		"/Users/ladipo/.zshrc",
+		"/Users/ladipo/.ssh/id_rsa",
+		"/Users/ladipo/.ssh/id_rsa.pub",
+		"/Users/ladipo/projects/dojo_space_allocator/dojo.py",
+		"/Users/ladipo/projects/dojo_space_allocator/README.md",
+		"/Users/ladipo/projects/dojo_space_allocator/.gitignore",
+		"/Users/ladipo/projects/dojo_space_allocator/setup.cfg",
+		"/Users/ladipo/projects/dojo_space_allocator/db/dojodb.py",
+		"/Users/ladipo/projects/dojo_space_allocator/tests/test_dojo_save_load_state.py",
+		"/Users/ladipo/projects/dojo_space_allocator/tests/test_dojo_reallocate_load_people.py",
+		"/Users/ladipo/projects/dojo_space_allocator/.coveragerc",
+		"/Users/ladipo/projects/dojo_space_allocator/.coveralls",
+		"/Users/ladipo/projects/dojo_space_allocator/.travis.yml",
+		"/Users/ladipo/projects/dojo_space_allocator/models/person.py",
+		"/Users/ladipo/projects/dojo_space_allocator/tests/test_room.py",
+		"/Users/ladipo/projects/dojo_space_allocator/tests/test_person.py",
+		"/Users/ladipo/projects/dojo_space_allocator/tests/.coverage",
+		"/Users/ladipo/projects/dojo_space_allocator/requirements.txt",
+		"/Users/ladipo/projects/dojo_space_allocator/tests/test_dojo_print_room_allocations_unallocated.py",
+		"/Users/ladipo/.dojo_data/unallo.txt",
+		"/Users/ladipo/projects/dojo_space_allocator/people.txt",
+		"/Users/ladipo/.dojo_data/fjfj.txt",
+		"/Users/ladipo/go/src/hello/hello.go",
+		"/Users/ladipo/projects/dojo_space_allocator/models/staff.py",
+		"/Users/ladipo/projects/thefacebot-steps/step8.txt",
+		"/Users/ladipo/projects/thefacebot-steps/index.php",
+		"/Users/ladipo/projects/thefacebot-steps/step4.txt",
+		"/Users/ladipo/projects/thefacebot-steps/step3.txt",
+		"/Users/ladipo/projects/thefacebot-steps/step2.txt",
+		"/Users/ladipo/projects/thefacebot-steps/step1.txt",
+		"/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/SublimeREPL/SublimeREPL.sublime-settings",
+		"/Users/ladipo/projects/test.py",
+		"/Users/ladipo/projects/dojoallocator.sublime-project",
+		"/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/User/Python-Repl.sublime-build",
+		"/Users/ladipo/Documents/buildtest.py"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"room.name",
+			"room",
+			"arg",
+			"make",
+			"m",
+			"mkdir",
+			"mkdirs",
+			"mkdir",
+			"mkdirs",
+			"arg",
+			"dojo",
+			"occupants",
+			"allocate_person",
+			"add_person_to_room",
+			"print_allocations",
+			"to_file",
+			"append_room",
+			"data_dir",
+			"db_dir",
+			"home",
+			"append_person_to_session",
+			"append_room_to_session",
+			"allocate_person_to_room",
+			"get_available_room",
+			"check_room_size",
+			"delete",
+			"add_person",
+			"append_person_to_session",
+			"append_person_to_sesion",
+			"allocate_person_to_room",
+			"get_available_room",
+			"allocate_person_to_room",
+			"get_available_room",
+			"append_room_to_session_data",
+			"add_person_to_room",
+			"get_available_room",
+			"Dojo",
+			"se",
+			"room",
+			"room_keys",
+			"all_rooms"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "manager/roommanager.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 165,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								165,
+								165
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"color_helper.box_height": 15,
+							"color_helper.color_scheme": "Packages/User/Color Highlighter/themes/Material-Theme.tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"current_ext": ".py",
+								"current_syntax": "Djaneiro/Syntaxes/Python Django",
+								"enabled": false,
+								"last_updated": 1489389475.88
+							},
+							"color_scheme": "Packages/User/Color Highlighter/themes/Material-Theme.tmTheme",
+							"git_gutter_enabled": true,
+							"open_with_edit": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "manager/context.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 358,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"color_helper.box_height": 15,
+							"color_helper.color_scheme": "Packages/User/Color Highlighter/themes/Material-Theme.tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"current_ext": ".py",
+								"current_syntax": "Djaneiro/Syntaxes/Python Django",
+								"enabled": false,
+								"last_updated": 1489389475.88
+							},
+							"color_scheme": "Packages/User/Color Highlighter/themes/Material-Theme.tmTheme",
+							"git_gutter_enabled": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 2,
+					"file": "dojo.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 23918,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"color_helper.box_height": 15,
+							"color_helper.color_scheme": "Packages/User/Color Highlighter/themes/Material-Theme.tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"current_ext": ".py",
+								"current_syntax": "Djaneiro/Syntaxes/Python Django",
+								"enabled": false,
+								"last_updated": 1489389475.88
+							},
+							"color_scheme": "Packages/User/Color Highlighter/themes/Material-Theme.tmTheme",
+							"git_gutter_enabled": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/Users/ladipo/Library/Application Support/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 20799,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"color_helper.box_height": 15,
+							"color_helper.color_scheme": "Packages/User/Color Highlighter/themes/Material-Theme.tmTheme",
+							"color_helper.file_palette":
+							[
+							],
+							"color_helper.preview_meta":
+							{
+							},
+							"color_helper.scan":
+							{
+								"current_ext": ".sublime-settings",
+								"current_syntax": "JavaScript/JSON",
+								"enabled": false,
+								"last_updated": 1489389475.88
+							},
+							"color_scheme": "Packages/User/Color Highlighter/themes/Material-Theme.tmTheme",
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 9523.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.429655597777,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 141.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/User/Python-Repl.sublime-build",
+	"project": "dojo.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 1,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 178.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+		"max_columns": 5
+	}
+}
