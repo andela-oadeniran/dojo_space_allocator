@@ -7,7 +7,7 @@ class Room(object):
 
     def __init__(self, room_type, name):
         self.name = name.upper()
-        self.purpose = room_type
+        self.room_type = room_type
         self.occupants = []
 
     def __repr__(self):

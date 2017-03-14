@@ -9,7 +9,6 @@ class Fellow(Person):
     def __init__(self, fname, lname, wants_accommodation):
         super(Fellow, self).__init__(fname=fname, lname=lname, role='fellow')
         self.wants_accommodation = wants_accommodation
-        self.office = None
         self.living_space = None
 
     def __repr__(self):

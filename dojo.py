@@ -6,7 +6,8 @@ from os.path import expanduser
 # import random
 import sqlite3
 import pickle
-# import termcolor
+import termcolor
+import sys
 from termcolor import cprint
 # from context import LivingSpace
 # from context import Office
@@ -17,17 +18,19 @@ from context import PersonManager
 room_manager = RoomManager()
 person_manager = PersonManager()
 
+
 class Dojo(object):
     """
-    The class contains all rooms and persons in the system
+    The class contains all rooms and persons in the system and
+    it is the main script for the application.
     """
 
     def __init__(self):
         # constructor method
         self.all_rooms = []
         self.people = []
-        self.home = expanduser('~')
-        self.data_dir = self.home + '/.dojo_data/'
+        self.HOME = expanduser('~')
+        self.DATA_DIR = self.HOME + '/.dojo_data/'
 
     def create_room(self, room_type, room_names):
         # The class calls on the room_manager methods to create a rooms.
@@ -41,6 +44,8 @@ class Dojo(object):
 
                     room = room_class(room_name)
                     room_manager.add_room_to_session(room, self.all_rooms)
+                    print('added room {0} {1}'.format(
+                        room_type, room_name.upper()))
                 else:
                     print('Not unique')
         except TypeError:
@@ -48,186 +53,138 @@ class Dojo(object):
         except ValueError:
             print('Room name cannot be an empty string')
 
-    def add_person(self, fname, lname, role, wants_accommodation=None):
-        # check role of the person supplied must either be a staff or a fellow
+    def add_person(self, fname, lname, role, wants_accommodation='n'):
+        ''' check role of the person supplied must either be a staff or a fellow
+        if office is available add either to an office and if a fellow wants
+        accommodation allocate to a living space if available '''
         try:
             person_manager.check_valid_person_role(role)
+            person_manager.check_name_validity(fname, lname)
             person_class = person_manager.return_staff_fellow_class(role)
             person = person_class(fname, lname, wants_accommodation)
-            person_manager.add_person_to_session(person, )
+            person_manager.add_person_to_session(person, self.people)
+            available_office = room_manager.get_available_room(
+                'office', self.all_rooms)
+            available_living_space = room_manager.get_available_room(
+                'living', self.all_rooms)
 
+            if available_office:
+                room_manager.add_person_to_room(available_office, person)
+                person_manager.assign_person_room_name(
+                    available_office, person)
+                print('added person to office')
+            else:
+                print('no offices')
+            if ((person.role == 'fellow') and
+                    person.wants_accommodation in ('y', 'Y')):
+                if available_living_space:
+                    room_manager.add_person_to_room(
+                        available_living_space, person)
+                    person_manager.assign_person_room_name(
+                        available_living_space, person)
+                    print('added person to living space')
+                else:
+                    print('no living spaces')
         except TypeError:
-            print('Invalid Type')
+            print('invalid type')
         except ValueError:
             print('invalid firstname and/or lastname')
-    
+
     def print_room(self, room_name):
         # check if room exists in dojo
-        if (self.all_rooms):
-            room_key = room_name.upper()
-            # check if the room name exists in dojo
-            if room_key in self.app_session['room'].keys():
-                occupants=  self.app_session['room'][room_key].occupants
-                # check to see if the room has occupants
-                if occupants:
-                    occupants = [occupant.pname for occupant in occupants]
-                    cprint ('ROOM ({0}) PURPOSE ({1})'.
-                        format( self.app_session['room'][room_key].name,self.app_session['room'][room_key].purpose.upper()), 'green')
-                    cprint(' , '.join(occupants), 'green')
-                    return ', '.join(occupants)
-                # if the room has o occupants print and return this
-                else:
-                    cprint ('{0} currently has no occupant(s)!'.
-                            format(room_key), 'magenta')
-                    return ('{} currently has no occupant(s)'.format(room_key))
+        if room_manager.check_room_name_uniqueness(
+                room_name, self.all_rooms):
+            room = room_manager.get_room_with_a_room_name(
+                room_name, self.all_rooms)
+            occupants = room_manager.string_room_occupants(room)
+            if occupants:
+                print(occupants)
             else:
-                cprint('Room doesn\'t exist in Dojo!!!', 'red')
-                return 'Room name not in session.'
+                print('No occupants')
         else:
-            cprint('There are currently no rooms in Dojo.', 'magenta')
-            return 'No rooms in Dojo.'
+            print('{} not a room in Dojo'.format(room_name.upper()))
 
-    def print_allocations(self , to_file = 'n'):
+    def print_allocations(self, to_file=None):
         # print_allocations take akey word argument to_file and defaults to 'n'
-        # This should be passed when user justs wants to print to sys stdout and 
-        # not have it stored.
-        if (self.all_rooms):
+        # This should be passed when user justs wants to print to stdout and
+        if self.all_rooms:
             for room in self.all_rooms:
-                # check to see if room contains occupants
-                if (room.occupants):
-                    members = ', '.join(
-                        str(person).title() for person in room.occupants)
-                    self.print_allocations_func(room, to_file,members)
-        
+                occupants = room_manager.string_room_occupants(room)
+                if occupants:
+                    text = '{0} {1}\n{2}\n{3}'.format(room.name,
+                                                      room.room_type,
+                                                      '-' * 30, occupants)
                 else:
-                    self.print_allocations_func(room, to_file)
-            # feedback for successful print to a text file
-            if not to_file.lower() == 'n':
-                if not to_file.endswith('.txt'):
-                    to_file += '.txt'
-                    file_path = self.data_dir + to_file
+                    text = '{0} {1}\n{2}\n{0} has no occupants'.format(
+                        room.name, room.room_type, '-' * 30)
+                if to_file:
+                    to_file = self.append_valid_extension_to_data_path(
+                        to_file, '.txt')
+                    room_manager.print_text_to_file(to_file, text)
+                    print('Successfully printed to {}'.format(to_file))
                 else:
-                    file_path = self.data_dir + to_file
-                cprint('Successfully written Allocations to {0}.\n'.
-                       format(file_path), 'green')
-                return file_path
-            else:  
-                return 'Successfully printed allocations to screen'
-                
-
+                    print(text)
         else:
-            cprint('There are currently no rooms in Dojo', 'magenta')
-            return ('There are currently no rooms in Dojo.')
+            print('There are currently no rooms in Dojo')
 
-    def print_unallocated(self, to_file='n'):
-        to_file_living = to_file
-        if (self.people):
-            # make a list of fellows and staff with no offices
-            # make a list of fellows that want accommodation but have none
-            no_office_allocated_list = [person for person in self.people if not person.office]
-            list_of_fellows = [person for person in self.people if person.role =='fellow']
-            no_living_space_allocated_list = [person for person in list_of_fellows if person.wants_accommodation.lower()=='y' and not person.living_space]
-            if (no_office_allocated_list) or (no_living_space_allocated_list):
-                cprint('ID       Person DETAILS', 'green')
-                if no_office_allocated_list:
-                    for person in no_office_allocated_list:
-                        self.print_unallocated_func(person,'office', to_file)
-                    if to_file not in ('N', 'n'):
-                        if not to_file.endswith('.txt'):
-                            to_file+= '.txt'
-                            file_path = self.data_dir + to_file
-                        else:
-                            file_path =self.data_dir + to_file
-                        cprint('Successfully written person(s) that need office spaces {}'.format(file_path), 'green')
-
-                if no_living_space_allocated_list:
-                    for person in no_living_space_allocated_list:
-                        self.print_unallocated_func(person, 'living', to_file)
-                    if to_file not in ('N', 'n'):
-                        if not to_file.endswith('.txt'):
-                            to_file+= '.txt'
-                            file_path = self.data_dir + to_file
-                        else:
-                            file_path =self.data_dir + to_file
-                        cprint('Successfully written person(s) that need living spaces {}'.format(file_path), 'green')
-                return 'Printed Allocation'
+    def print_unallocated(self, to_file=None):
+        # prints people who are unallocated either to the stdout or a file
+        if self.people:
+            office_unallocated = person_manager.unallocated_list(
+                self.people)[0]
+            living_space_unallocated = person_manager.unallocated_list(
+                self.people)[1]
+            unallocated_office_text = self.format_text_persons_details(
+                office_unallocated, 'office space')
+            unallocated_living_space_text = self.format_text_persons_details(
+                living_space_unallocated, 'living space')
+            if not (unallocated_office_text or unallocated_living_space_text):
+                print('No unallocated person')
+                break
+            if to_file:
+                to_file = self.append_valid_extension_to_data_path(
+                    to_file, '.txt')
+                room_manager.print_text_to_file(
+                    to_file, unallocated_office_text)
+                room_manager.print_text_to_file(
+                    to_file, unallocated_living_space_text)
             else:
-                cprint('There are no unallocated people', 'magenta')
-                return None
+                print(unallocated_office_text)
+                print(unallocated_living_space_text)
+
         else:
-            cprint('No person in the System Yet!', 'red')
-            return 'No person in the System Yet!'
+            print('No person here')
 
     def people_id(self):
         # This allows user to easily check for a person's id.
         if self.people:
-            cprint('PERSON-ID          PERSON-DETAILS', 'green')
-            for index, person_key in enumerate(self.people_keys):
-                cprint('{0}     {1}'.format(person_key, self.people[index].pname))
+            print('ID          PERSON-DETAILS')
+            for index, person in enumerate(self.people):
+                print('{0}     {1}'.format(
+                    index + 1, person.pname))
         else:
-            cprint('No person added yet!!!', 'red')
+            print('No person added yet!!!')
 
     def reallocate_person(self, person_id, room_name):
-        if (person_id in self.people_keys) and (room_name.upper() in self.app_session['room'].keys()):
-            if (self.app_session['person'][person_id].office != room_name.upper()):
-                room_key = room_name.upper()
-                room = self.app_session['room'][room_key]
-                person = self.app_session['person'][person_id]
-                # check to see if the intended allocation is full
-                if (self.check_room_size(room)):
-                    # check to see if the room-provided's purpose and separate
-                    # the function enters the condition office for staff and fellows
-                    if room.purpose == 'office':
-                        if person.office:
-                            # person previously has an office, delete  person from the office.
-                            self.delete_person_from_room(
-                                person, self.app_session['room'][person.office])
-                            # add person to the new allocated office
-                            person.office = self.add_person_to_room(person, room)
-                            cprint('{0} has been allocated the office {1}'.format(
-                                person.fname, room.name), 'green')
-                        else:
-                            # if a person does not have an office go ahead and allocate an office to the person.
-                            person.office = self.add_person_to_room(person, room)
-                            cprint('{0} has been allocated the office {1}'.format(
-                                person.fname, room.name), 'green')
-                    else:
-                        # condition that seives for fellows that want a living space
-                        if person.role == 'fellow':
-                            # check if fellow wants a living space.
-                            if person.wants_accommodation in ('y', 'Y'):
-                                if (self.app_session['person'][person_id].living_space != room_name.upper()):
-                                    if person.living_space:
-                                        # if a person has a living space prior delete person from the living space and allocate person to the new room
-                                        self.delete_person_from_room(
-                                            person, self.app_session['room'][person.living_space])
-                                        person.living_space = self.add_person_to_room(
-                                            person, room)
-                                        cprint(
-                                            '{0} has been allocated the living space {1}'.
-                                            format(person.fname, room.name), 'green')
-                                    else:
-                                        # If person doesn't have a living space go ahead and give the person a space.
-                                        person.living_space = self.add_person_to_room(
-                                            person, room)
-                                        cprint(
-                                            '{0} has been allocated the living space {1}'.
-                                            format(person.pname, room.name), 'green')
-                                else:
-                                    cprint("You cannot reallocate a person to current room", 'red')
-                                    return 'You cannot reallocate person to current room'
-
-                        else:
-                            cprint('You cannot add Staff {}, to a living Space.'.format(person.pname), 'red')
+        person = self.people[person_id - 1]
+        room = [room for room in self.all_rooms
+                if room.name and room.name == room_name.upper()]
+        if room and person:
+            room = room[0]
+            try:
+                if (person.office == room_name.upper()) or (
+                        person.living_space == room_name.upper()):
+                    print('cannot allocate to present room')
                 else:
-                    cprint('You cannot Reallocate to a full Room', 'red')
-            else:
-                cprint("You cannot reallocate a person to current room", 'red')
-                return 'You cannot reallocate person to current room'
-
-        else:
-            cprint('Invalid Person ID or Room Name', 'red')
-            return 'Invalid Person Identifier or Room'
+                    room_manager.check_room_size(room)
+                    room_manager.check_person_can_be_in_room(room, person)
+                    room_manager.delete_person_from_current_room(person)
+                    room_manager.add_person_to_room(room, person)
+                    person_manager.assign_person_room_name(room, person)
+            except ValueError:
+                print('Room is full')
+            except TypeError:
+                print('person cannot be allocated the room')
 
     def load_people(self, text_file):
         # check to see if it is a valid text file, if not add the extension
@@ -307,15 +264,43 @@ class Dojo(object):
         else:
             cprint('Not a valid database check home/.dojo_data for the available databases', 'red')
 
-    #These are helper methods used in other dojo methods.
-    def add_person_to_room(self,person, room):
-        room.occupants.append(person)
-        return room.name
+    # These are helper methods used in other dojo methods.
+    # HELPER METHODS
+    def append_extension(self, data_file, extension):
+        if data_file.endswith(extension):
+            return data_file
+        else:
+            data_file += extension
+            return data_file
 
+    def check_or_make_data_dir_path(self):
+        if os.path.exists(self.DATA_DIR):
+            return self.DATA_DIR
+        else:
+            os.mkdir(self.DATA_DIR)
+            return self.DATA_DIR
+
+    def append_valid_extension_to_data_path(self, data_file, extension):
+        data_file = self.append_extension(data_file, extension)
+        self.DATA_DIR = self.check_or_make_data_dir_path()
+        data_file = self.DATA_DIR + data_file
+        return data_file
+
+    def format_text_persons_details(self, people_list, room_type):
+        person_text = ''
+        for index, person in enumerate(people_list):
+            person_data = '{0} {1}\n '.format(person.id, person.pname)
+            person_text += person_data
+
+        text = '(ID) UNALLOCATED LIST {0}\n {1}'.format(room_type.upper(),
+                                                        person_text)
+        if person_text:
+            return text
+        else:
+            return None
 
     def delete_person_from_room(self, person, room):
         room.occupants.remove(person)
-
 
     def check_room_size(self, room):
         if len(room.occupants) < room.max_size:
@@ -324,91 +309,17 @@ class Dojo(object):
             return False
 
 
-    def get_available_room(self, purpose):
-        available_rooms = [room for room in self.all_rooms if room.purpose == purpose and len(room.occupants) < room.max_size]
-        if available_rooms:
-            room = random.choice(available_rooms)
-            return room
-        return None
-
-    def allocate_person_to_room(self, person, room):
-        self.add_person_to_room(person, room)
-        if room.purpose == "office":
-            person.office = room.name
-        elif room.purpose == "living":
-            person.living_space = room.name
-
-    def append_room_to_session_data(self, room_key, room_object):
-        self.all_rooms.append(room_object)
-        self.app_session['room'][room_key] = room_object
-
-    def append_person_to_session_data(self,person_object):
-        # function to help put a person to apllication session
-        self.people.append(person_object)
-        person_key = len(self.people)
-        person_object.id = person_key
-        self.app_session['person'][person_key] = person_object
-        self.people_keys.append(person_key)
-
-    def print_unallocated_func(self, person_object, room_purpose_needed, print_to_file):
-        text = '({0}) {1} ({2}) space needed\n'.format(person_object.id, person_object.pname, room_purpose_needed)
-        # check if the user wants to output on the screen or have it written in a text file
-        if print_to_file in ('n', 'N'):
-            cprint(text, 'magenta')
-        else:
-            if not print_to_file.endswith('.txt'):
-                print_to_file += '.txt'
-            if os.path.exists(self.data_dir):
-                print_to_file = self.data_dir + print_to_file
-            else:
-                # create the directory if not exist.
-                os.mkdir(self.data_dir)
-                print_to_file = self.data_dir + print_to_file
-            with open(print_to_file, 'a') as unallocated_file:
-                unallocated_file.write(text)
-                unallocated_file.close()
-
-    def print_allocations_func(self,room,print_to_file, room_occupants=None):
-        # if a room has occupants text is formed with the members list.
-        dash_lines = '-'*60
-        if room_occupants:  
-            text = ('{0}\n{1}\n{2}\n'.format(room.name,dash_lines, room_occupants))
-            if print_to_file.lower() == 'n':
-                cprint(text, 'green')
-            else:
-                # check to see the print to file details
-                if not print_to_file.endswith('.txt'):
-                    print_to_file = print_to_file + '.txt'
-                if os.path.exists(self.data_dir):
-                    print_to_file = self.data_dir + print_to_file
-                else:
-                    os.mkdir(self.data_dir)
-                    print_to_file = self.data_dir + print_to_file
-                with open(print_to_file, 'a') as allocations_file:
-                    allocations_file.write(text)
-                    allocations_file.close()     
-        else:
-            # rooms with no occupants
-            text = ('{0}\n{1}\n{0} has no occupants yet\n'.format(room.name, dash_lines))
-            if print_to_file.lower()=='n':
-                cprint(text, 'green')
-            else:
-                # check the details and print to the write file
-                if not print_to_file.endswith('.txt'):
-                    print_to_file = print_to_file + '.txt'
-                if os.path.exists(self.data_dir):
-                    print_to_file = self.data_dir + print_to_file
-                else:
-                    os.mkdir(self.data_dir)
-                    print_to_file = self.data_dir + print_to_file
-                with open(print_to_file, 'a') as allocations_file:
-                    allocations_file.write(text)
-                    allocations_file.close()
-
-
-
 
 
 dojo = Dojo()
-dojo.create_room('ving',['Blue'])
-print(dojo.all_rooms)
+dojo.add_person('ladi', 'adeniran', 'fellow', 'y')
+dojo.create_room('office', ['orion'])
+dojo.create_room('living', ['blue'])
+
+# dojo.add_person('ladi', 'adeniran', 'fellow')
+# dojo.add_person('ladi', 'adeniran', 'fellow')
+dojo.people_id()
+dojo.print_unallocated('pop')
+
+
+

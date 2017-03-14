@@ -30,25 +30,13 @@ class RoomManager():
     def return_living_office_class(self, room_type):
         return Office if room_type.lower() == 'office' else LivingSpace
 
-    # # @clsmethod
-    # def create_room(self, room_type, room_name):
-    #     room_class = self.return_living_office_class(room_name)
-    #     room = room_class(room_name)
-    #     return room
-
-    # def create_office(self, room_name):
-    #     '''this helps create an Office object'''
-    #     office = Office(room_name.upper())
-    #     return office
-
-    # def create_living_space(self, room_name):
-    #     '''This creates the a living space object'''
-    #     living_space = LivingSpace(room_name.upper())
-    #     return living_space
-
     def check_room_name_uniqueness(self, room_name, rooms_list):
         '''This checks for room uniqueness'''
-        return True if room_name.upper() in rooms_list else False
+        rooms_names = [str(room) for room in rooms_list]
+        if room_name.upper() in rooms_names:
+            return True
+        else:
+            False
 
     def add_room_to_session(self, room, rooms_list):
         '''This adds the room object to the Application session'''
@@ -61,9 +49,13 @@ class RoomManager():
         return room
 
     def string_room_occupants(self, room):
-        return str(', '.join(room.occupants)) if room.occupants else False
+        if room.occupants:
+            occupants = [person.pname for person in room.occupants]
+            return ', '.join(occupants)
+        else:
+            return False
 
-    def get_available_rooms(self, room_type, room_list):
+    def get_available_room(self, room_type, room_list):
         available_rooms = [room for room in room_list if room.room_type ==
                            room_type and len(room.occupants) < room.max_size]
         if available_rooms:
@@ -71,6 +63,36 @@ class RoomManager():
             return room
         else:
             return None
+
+    def get_room_with_a_room_name(self, room_name, room_list):
+        room = [room for room in room_list if room.name == room_name.upper()]
+        return room[0]
+
+    def print_text_to_file(self, to_file, text):
+        with open(to_file, 'a') as allocations:
+            allocations.write(text)
+
+    def check_room_size(self, room):
+        if len(room.occupants) < room.max_size:
+            return True
+        else:
+            raise ValueError
+
+    def check_person_can_be_in_room(self, room, person):
+        if ((room.room_type == 'living') and
+                (person.wants_accommodation.lower() != 'y')):
+            raise TypeError
+        else:
+            return True
+
+    def delete_person_from_current_room(room, person):
+        if person in room.occupants:
+            room.occupants.remove(person)
+            return room.occupants
+        else:
+            return None
+
+
 
 
 
