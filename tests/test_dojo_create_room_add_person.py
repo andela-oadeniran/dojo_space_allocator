@@ -1,22 +1,13 @@
 
 #!/usr/bin/env python
 
-import os
-import sys
-dojodir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
-sys.path.append(dojodir)
-
-
-from dojo import Dojo
-from models.fellow import Fellow
-from models.staff import Staff
-from models.living import LivingSpace
-from models.office import Office
 import unittest
+from testcontext import Dojo
 
 
 class TestCreateRoom(unittest.TestCase):
     """Write Docstring here """
+
     def setUp(self):
         self.dojo = Dojo()
 
@@ -94,8 +85,11 @@ class TestCreateRoom(unittest.TestCase):
     def tearDown(self):
         del self.dojo
 
+
 class TestAddPerson(unittest.TestCase):
-    """Test suite for the add_person Dojo functonality"""
+    """Test suite for the add_person Dojo functonality
+    """
+
     def setUp(self):
         self.dojo = Dojo()
 
@@ -137,7 +131,6 @@ class TestAddPerson(unittest.TestCase):
         room = self.dojo.app_session['room']['AMITY']
         self.assertEqual(fellow.living_space, 'AMITY')
         self.assertEqual(str(room.occupants[0]), 'Jeremiah Camp')
-
 
     def test_only_add_fellow_or_staff(self):
         self.dojo.add_person('Joshua', 'Emmsong', 'Engineer')

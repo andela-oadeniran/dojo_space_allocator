@@ -15,8 +15,6 @@ sys.path.append(MANAGER_DIR)
 
 from roommanager import RoomManager
 from personmanager import PersonManager
-# from models.fellow import Fellow
-# from models.office import Office
-# from models.room import Room
-# from models.living import LivingSpace
+from db.dojodb import DojoDb
+
 

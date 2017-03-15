@@ -3,12 +3,7 @@
 import os
 import sys
 import unittest
-modelsdir = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '../models'))
-sys.path.append(modelsdir)
-from person import Person
-from fellow import Fellow
-from staff import Staff
+from testcontext import Fellow, Person, Staff
 
 
 class TestPersonClass(unittest.TestCase):

@@ -54,7 +54,8 @@ class PersonManager():
         office_unallocated = [person for person in people_list
                               if not person.office]
         fellow_list = [person for person in people_list
-                       if person.role.lower() == 'fellow']
+                       if person.role.lower() == 'fellow' and
+                       person.wants_accommodation]
         living_space_unallocated = [person for person in fellow_list
                                     if person.wants_accommodation.lower() ==
                                     'y' and not(person.living_space)]

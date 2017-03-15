@@ -85,8 +85,8 @@ class RoomManager():
         else:
             return True
 
-    def delete_person_from_current_room(room, person):
-        if person in room.occupants:
+    def delete_person_from_room(self, room, person):
+        if room:
             room.occupants.remove(person)
             return room.occupants
         else:

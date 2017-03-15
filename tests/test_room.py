@@ -1,15 +1,7 @@
 #!/usr/bin/env python
 
-
-import os
-import sys
 import unittest
-modelsdir = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '../models'))
-sys.path.append(modelsdir)
-from room import Room
-from office import Office
-from living import LivingSpace
+from testcontext import Room, Office, LivingSpace
 
 
 class TestRoomClass(unittest.TestCase):
@@ -17,15 +9,15 @@ class TestRoomClass(unittest.TestCase):
     """
 
     def test_create_room_successfully(self):
-        new_room = Room(name='Blue', purpose='meeting room')
+        new_room = Room(name='Blue', room_type='meeting room')
         self.assertTrue(new_room)
         self.assertIsInstance(new_room, Room)
         self.assertEqual(new_room.name, 'BLUE')
-        self.assertEqual(new_room.purpose, 'meeting room')
+        self.assertEqual(new_room.room_type, 'meeting room')
         self.assertEqual(len(new_room.occupants), 0)
 
     def test_repr_name_rooms(self):
-        new_room = Room(name='DWTW', purpose='kitchen')
+        new_room = Room(name='DWTW', room_type='kitchen')
 
         self.assertEqual(str(new_room), 'DWTW')
 
@@ -38,7 +30,7 @@ class TestOfficeClass(unittest.TestCase):
         new_office = Office('Orange')
         self.assertEqual(new_office.name, 'ORANGE')
         self.assertIsInstance(new_office, Office)
-        self.assertEqual(new_office.purpose, 'office')
+        self.assertEqual(new_office.room_type, 'office')
         self.assertEqual(len(new_office.occupants), 0)
         self.assertIsInstance(new_office, Room)
         self.assertEqual(new_office.max_size, 6)
@@ -56,7 +48,7 @@ class TestLivingSpaceClass(unittest.TestCase):
         new_living_space = LivingSpace('Orion')
         self.assertEqual(new_living_space.name, 'ORION')
         self.assertNotEqual(new_living_space.name, 'BLUE')
-        self.assertEqual(new_living_space.purpose, 'living')
+        self.assertEqual(new_living_space.room_type, 'living')
         self.assertIsInstance(new_living_space, Room)
         self.assertNotIsInstance(new_living_space, Office)
         self.assertEqual(len(new_living_space.occupants), 0)

@@ -6,6 +6,7 @@ import sqlite3
 class DojoDb():
     '''The module helps to create the connection
     to the sqlite3 database.'''
+
     def __init__(self, db_name):
         # create a db connection.
         self.db_name = db_name

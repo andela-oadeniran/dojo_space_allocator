@@ -14,9 +14,5 @@ MODELS_DIR = os.path.join(ROOT_DIR, 'models')
 sys.path.append(ROOT_DIR)
 sys.path.append(MODELS_DIR)
 
-from models.fellow import Fellow
-from models.office import Office
-from models.living import LivingSpace
-from models.person import Person
-from models.room import Room
-from models.staff import Staff
+from models.person import Person, Fellow, Staff
+from models.room import Room, Office, LivingSpace

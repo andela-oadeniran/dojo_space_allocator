@@ -28,9 +28,9 @@ import cmd
 from docopt import docopt, DocoptExit
 from pyfiglet import Figlet
 from termcolor import colored, cprint
-
 from dojo import Dojo
 dojo = Dojo()
+
 
 def docopt_cmd(func):
     """
@@ -43,21 +43,15 @@ def docopt_cmd(func):
             opt = docopt(fn.__doc__, args)
 
         except DocoptExit as e:
-            # The DocoptExit is thrown when the args do not match.
-            # We print a message to the user and the usage block.
-
+            # This is thrown if a false command is given.
             print('Invalid Command!')
             print(e)
             return
 
         except SystemExit:
-            # The SystemExit exception prints the usage for --help
-            # We do not need to do the print here.
-
+            # Exception calls app.py help.
             return
-
         return func(self, opt)
-
     fn.__name__ = func.__name__
     fn.__doc__ = func.__doc__
     fn.__dict__.update(func.__dict__)
@@ -67,7 +61,9 @@ def docopt_cmd(func):
 class MyInteractive(cmd.Cmd):
     fig_font = Figlet(font='graffiti')
     welcome_text = fig_font.renderText('Dojo Space Allocator')
-    welcome_text = colored(welcome_text, 'green') + colored('Type help to get commands', 'magenta')
+    welcome_text = colored(
+        welcome_text, 'green') + colored(
+        'Type help to get commands', 'magenta')
     intro = welcome_text
     prompt = colored('dojo>>>', 'cyan')
     file = None
@@ -76,9 +72,9 @@ class MyInteractive(cmd.Cmd):
     def do_create_room(self, args):
         """Usage: create_room <room_type> <room_names>...
         """
-        room_purpose = args.get('<room_type>')
+        room_type = args.get('<room_type>')
         room_names = args.get('<room_names>')
-        dojo.create_room(room_purpose, room_names)
+        dojo.create_room(room_type, room_names)
 
     @docopt_cmd
     def do_add_person(self, args):
@@ -86,21 +82,9 @@ class MyInteractive(cmd.Cmd):
         """
         fname = args.get('<fname>')
         lname = args.get('<lname>')
-        person_type = args.get('<FELLOW/STAFF>')
-        wants_accommodation = args.get('<wants_accommodation>')
-        if fname.isalpha() and lname.isalpha():
-            if person_type.lower() == 'staff':
-                dojo.add_person(fname, lname, 'staff')
-            elif person_type.lower() == 'fellow':
-                if wants_accommodation not in ('y', 'Y'):
-                    dojo.add_person(fname, lname, 'fellow')
-                else:
-                    dojo.add_person(fname, lname, 'fellow', 'y')
-            else:
-                cprint('Invalid!!! Dojo Occupants'
-                       'are either Fellows or Staff', 'red')
-        else:
-            cprint('Names can only be string character', 'red')
+        person_role = args.get('<FELLOW/STAFF>')
+        wants_accommodation = args.get('<wants_accommodation>', None)
+        dojo.add_person(fname, lname, person_role, wants_accommodation)
 
     @docopt_cmd
     def do_print_room(self, args):
@@ -113,21 +97,15 @@ class MyInteractive(cmd.Cmd):
     def do_print_allocations(self, args):
         """Usage: print_allocations [(-o <filename>)]
         """
-        filename = args.get('<filename>')
-        if not (filename):
-            dojo.print_allocations()
-        else:
-            dojo.print_allocations(filename)
+        filename = args.get('<filename>', None)
+        dojo.print_allocations(filename)
 
     @docopt_cmd
     def do_print_unallocated(self, args):
         """Usage: print_unallocated [(-o <filename>)]
         """
-        filename = args.get('<filename>')
-        if not (filename):
-            dojo.print_unallocated()
-        else:
-            dojo.print_unallocated(filename)
+        filename = args.get('<filename>', None)
+        dojo.print_unallocated(filename)
 
     @docopt_cmd
     def do_people_id(self, args):
@@ -158,11 +136,11 @@ class MyInteractive(cmd.Cmd):
     def do_save_state(self, args):
         """Usage: save_state [(--db <sqlite_database>)]
         """
-        db_name = args.get('<sqlite_database>', None)
-        if db_name:
-            dojo.save_state(db_name)
-        else:
+        db_name = args.get('<sqlite_database>')
+        if not db_name:
             dojo.save_state()
+        else:
+            dojo.save_state(db_name)
 
     @docopt_cmd
     def do_load_state(self, args):
