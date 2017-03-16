@@ -11,7 +11,6 @@ install:
 # command to run tests
 script:
   - "nosetests
-    --ignore-files='test_dojo_load_people.py'
     --with-coverage
     tests"
   - "coveralls"

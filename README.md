@@ -1,8 +1,5 @@
 [![Build Status](https://travis-ci.org/andela-oadeniran/dojo_space_allocator.svg?branch=ladi)](https://travis-ci.org/andela-oadeniran/dojo_space_allocator)
-[![Coverage Status](https://coveralls.io/repos/github/andela-oadeniran/dojo_space_allocator/badge.svg)](https://coveralls.io/github/andela-oadeniran/dojo_space_allocator)
-
-
-
+[![Coverage Status](https://coveralls.io/repos/github/andela-oadeniran/dojo_space_allocator/badge.svg?branch=test)](https://coveralls.io/github/andela-oadeniran/dojo_space_allocator?branch=test)
 ##            Dojo Space Allocator.
 
 ###The Application and what it does?
