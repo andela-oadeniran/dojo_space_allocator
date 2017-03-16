@@ -48,7 +48,7 @@ class TestLivingSpaceClass(unittest.TestCase):
         new_living_space = LivingSpace('Orion')
         self.assertEqual(new_living_space.name, 'ORION')
         self.assertNotEqual(new_living_space.name, 'BLUE')
-        self.assertEqual(new_living_space.room_type, 'living')
+        self.assertEqual(new_living_space.room_type, 'living_space')
         self.assertIsInstance(new_living_space, Room)
         self.assertNotIsInstance(new_living_space, Office)
         self.assertEqual(len(new_living_space.occupants), 0)

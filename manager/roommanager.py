@@ -15,7 +15,7 @@ class RoomManager():
 
     def check_valid_room_type(self, room_type):
         '''this checks for the validity of room_type given'''
-        if room_type.lower() in ('living', 'office'):
+        if room_type.lower() in ('living_space', 'office'):
             return room_type
         else:
             raise TypeError
@@ -66,11 +66,14 @@ class RoomManager():
 
     def get_room_with_a_room_name(self, room_name, room_list):
         room = [room for room in room_list if room.name == room_name.upper()]
-        return room[0]
+        return room[0] if room else False
 
     def print_text_to_file(self, to_file, text):
-        with open(to_file, 'a') as allocations:
-            allocations.write(text)
+        if text:
+            with open(to_file, 'w') as value:
+                value.write(text)
+        else:
+            return
 
     def check_room_size(self, room):
         if len(room.occupants) < room.max_size:
@@ -79,7 +82,7 @@ class RoomManager():
             raise ValueError
 
     def check_person_can_be_in_room(self, room, person):
-        if ((room.room_type == 'living') and
+        if ((room.room_type == 'living_space') and
                 (person.wants_accommodation.lower() != 'y')):
             raise TypeError
         else:

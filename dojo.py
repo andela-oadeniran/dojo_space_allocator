@@ -40,14 +40,15 @@ class Dojo(object):
 
                     room = room_class(room_name)
                     room_manager.add_room_to_session(room, self.all_rooms)
-                    print('added room {0} {1}'.format(
-                        room_type, room_name.upper()))
+                    print('A/An {0} called {1} has been'
+                          ' successfully created!'.format(
+                              room_type, room_name.title()))
                 else:
-                    print('Not unique')
+                    print('{} already exists!!!'.format(room_name))
         except TypeError:
-            print('Invalid room type')
+            print('Invalid Room Type')
         except ValueError:
-            print('Room name cannot be an empty string')
+            print('Room Name Cannot be an Empty String')
 
     def add_person(self, fname, lname, role, wants_accommodation=None):
         ''' check role of the person supplied must either be a staff or a fellow
@@ -62,15 +63,17 @@ class Dojo(object):
             available_office = room_manager.get_available_room(
                 'office', self.all_rooms)
             available_living_space = room_manager.get_available_room(
-                'living', self.all_rooms)
-
+                'living_space', self.all_rooms)
+            print('{0} {1} {2} has been successfully added.'.format(
+                role.title(), fname.title(), lname.title()))
             if available_office:
                 room_manager.add_person_to_room(available_office, person)
                 person_manager.assign_person_room_name(
                     available_office, person)
-                print('added person to office')
+                print('{0} has been allocated the office {1}'.format(
+                    fname.title(), person.office.title()))
             else:
-                print('no offices')
+                print('No available office space')
             if ((person.role == 'fellow') and
                     person.wants_accommodation in ('y', 'Y')):
                 if available_living_space:
@@ -78,9 +81,10 @@ class Dojo(object):
                         available_living_space, person)
                     person_manager.assign_person_room_name(
                         available_living_space, person)
-                    print('added person to living space')
+                    print('{0} has been allocated the living space {1}'.format
+                          (fname.title(), person.living_space.title()))
                 else:
-                    print('no living spaces')
+                    print('No Available living space.')
         except TypeError:
             print('invalid type')
         except ValueError:
@@ -95,10 +99,15 @@ class Dojo(object):
             occupants = room_manager.string_room_occupants(room)
             if occupants:
                 print(occupants)
+                return occupants
             else:
-                print('No occupants')
+                print('{} currently has no occupant(s)!'.format(
+                    room_name.upper()))
+                return '{} currently has no occupant(s)!'.format(
+                    room_name.upper())
         else:
             print('{} not a room in Dojo'.format(room_name.upper()))
+            return('{} not a room in Dojo.'.format(room_name.upper()))
 
     def print_allocations(self, to_file=None):
         ''' print_allocations take a key word argument to_file and defaults to 'n'
@@ -111,17 +120,20 @@ class Dojo(object):
                                                       room.room_type,
                                                       '-' * 30, occupants)
                 else:
-                    text = '{0} {1}\n{2}\n{0} has no occupants'.format(
-                        room.name, room.room_type, '-' * 30)
+                    text = '{0} ({1})\n{2}\n{0} has no occupants'.format(
+                        room.name, room.room_type.title(), '-' * 30)
                 if to_file:
                     to_file = self.append_valid_extension_to_data_path(
                         to_file, '.txt')
                     room_manager.print_text_to_file(to_file, text)
                     print('Successfully printed to {}'.format(to_file))
+                    return to_file
                 else:
                     print(text)
+                    return ('Successfully printed allocations to screen')
         else:
-            print('There are currently no rooms in Dojo')
+            print('There are currently no rooms in Dojo.')
+            return('There are currently no rooms in Dojo.')
 
     def print_unallocated(self, to_file=None):
         # prints people who are unallocated either to the stdout or a file
@@ -135,8 +147,8 @@ class Dojo(object):
             unallocated_living_space_text = self.format_text_persons_details(
                 living_space_unallocated, 'living space')
             if not (unallocated_office_text or unallocated_living_space_text):
-                print('No unallocated person')
-                return
+                print('No unallocated person in the System')
+                return None
             if to_file:
                 to_file = self.append_valid_extension_to_data_path(
                     to_file, '.txt')
@@ -144,11 +156,17 @@ class Dojo(object):
                     to_file, unallocated_office_text)
                 room_manager.print_text_to_file(
                     to_file, unallocated_living_space_text)
+                print(
+                    'Successefully printed unallocated person(s) to {}'.format(
+                        to_file))
+                return to_file
             else:
                 print(unallocated_office_text)
                 print(unallocated_living_space_text)
+                return 'Printed Allocation'
         else:
-            print('No person here')
+            print('Dojo currently has no person(s) yet!')
+            return 'No person in the System Yet!'
 
     def people_id(self):
         # This allows user to easily check for a person's id.
@@ -175,21 +193,31 @@ class Dojo(object):
                     person_room, self.all_rooms)
             else:
                 current_room = None
-            if (person.office == room_name.upper()) or (
+            if (person.office == room_name.upper()) or ((
+                    person.role == 'fellow') and
                     person.living_space == room_name.upper()):
-                print('cannot allocate to present room')
+                print('You cannot reallocate person to current room.')
+                return 'You cannot reallocate person to current room.'
             else:
                 room_manager.check_room_size(new_room)
                 room_manager.check_person_can_be_in_room(new_room, person)
                 room_manager.delete_person_from_room(current_room, person)
                 room_manager.add_person_to_room(new_room, person)
                 person_manager.assign_person_room_name(new_room, person)
+                print('{0} has been reallocated to the {1} {2}'.format(
+                    person.fname.title(), new_room.room_type,
+                    new_room.name.upper()))
         except ValueError:
-            print('Room is full')
+            print('Room is full, cannot reallocate {}'.format(
+                person.fname.title()))
+            return ('Room is full, cannot reallocate {}'.format(
+                person.fname.title()))
         except TypeError:
-            print('person cannot be allocated the room')
+            print('Person cannot be reallocated the room')
+            return 'Person cannot be reallocated to the room'
         except IndexError:
-            print('Id/room_name not found')
+            print('Id/Room_Name not found!')
+            return('Id/Room_Name not found!')
 
     def load_people(self, text_file):
         # check to see if it is a valid text file, if not add the extension
@@ -241,8 +269,10 @@ class Dojo(object):
             print('successful')
         except TypeError:
             print('Does not exist')
+            return ('Bad Database given')
         except:
             print('Invalid db')
+            return('Bad Database given')
 
     # These are helper methods used in other dojo methods.
     # HELPER METHODS
@@ -274,6 +304,7 @@ class Dojo(object):
 
         text = '(ID) UNALLOCATED LIST {0}\n {1}'.format(room_type.upper(),
                                                         person_text)
+
         if person_text:
             return text
         else:
@@ -289,3 +320,8 @@ class Dojo(object):
             return False
 
 
+dojo = Dojo()
+dojo.add_person('ladi', 'adeniran', 'fellow')
+dojo.create_room('office', ['Blue'])
+dojo.reallocate_person(1, 'jdjd')
+dojo.print_allocations()

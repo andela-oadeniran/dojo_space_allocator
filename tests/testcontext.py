@@ -16,8 +16,7 @@ sys.path.append(ROOT_DIR)
 sys.path.append(MODELS_DIR)
 sys.path.append(MANAGER_DIR)
 
-from dojo import Dojo
+from dojo import Dojo, PersonManager, RoomManager
 from models.person import Person, Fellow, Staff
 from models.room import Room, Office, LivingSpace
-# from manager.roommanager import RoomManager
-
+from os.path import expanduser
