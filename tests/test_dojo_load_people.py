@@ -20,7 +20,7 @@ class TestLoadPeople(unittest.TestCase):
         if os.path.exists(self.DATA_DIR):
             shutil.copy(source, self.DATA_DIR)
         else:
-            os.makedir(self.DATA_DIR)
+            os.mkdir(self.DATA_DIR)
             shutil.copy(source, self.DATA_DIR)
 
     def test_load_people_from_file_successfully(self):

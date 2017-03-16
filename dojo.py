@@ -318,10 +318,3 @@ class Dojo(object):
             return True
         else:
             return False
-
-
-dojo = Dojo()
-dojo.add_person('ladi', 'adeniran', 'fellow')
-dojo.create_room('office', ['Blue'])
-dojo.reallocate_person(1, 'jdjd')
-dojo.print_allocations()
