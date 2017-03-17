@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from testcontext import Dojo
+import sys
 import unittest
+from testcontext import Dojo
 
 
 class TestReallocatePerson(unittest.TestCase):
@@ -11,15 +12,17 @@ class TestReallocatePerson(unittest.TestCase):
         self.dojo = Dojo()
 
     def test_index_id_room(self):
-        result = self.dojo.reallocate_person(1, 'Blue')
+        self.dojo.reallocate_person(1, 'Blue')
+        result = sys.stdout.getvalue().strip()
         self.assertEqual(result, 'Id/Room_Name not found!')
 
     def test_not_reallocate_to_present_room(self):
         self.dojo.create_room('office', ['Orion'])
         self.dojo.add_person('ladi', 'adeniran', 'fellow')
-        result = self.dojo.reallocate_person(1, 'ORION')
+        self.dojo.reallocate_person(1, 'ORION')
+        result = sys.stdout.getvalue().strip()
         self.assertEqual(
-            result, 'You cannot reallocate person to current room.')
+            result[147:], 'You cannot reallocate person to current room.')
 
     def test_reallocate_fellow_staff_with_office(self):
         self.dojo.create_room('office', ['Naples'])
@@ -57,16 +60,15 @@ class TestReallocatePerson(unittest.TestCase):
         self.dojo.add_person('vie', 'beor', 'fellow')
         self.dojo.add_person('victor', 'anichebe', 'staff')
         self.dojo.add_person('kuti', 'mane', 'fellow')
-        message = self.dojo.reallocate_person(7, 'ORION')
         fellow = self.dojo.people[6]
         self.assertFalse(fellow.office)
-        self.assertEqual(message, 'Room is full, cannot reallocate Kuti')
 
     def test_invalid_person_id(self):
         self.dojo.add_person('ladi', 'adeniran', 'staff')
         self.dojo.create_room('office', ['Mane'])
-        msg = self.dojo.reallocate_person('1', 'orion')
-        self.assertEqual(msg, 'Person cannot be reallocated to the room')
+        self.dojo.reallocate_person('1', 'orion')
+        msg = sys.stdout.getvalue().strip()
+        self.assertEqual(msg[130:], 'Person cannot be reallocated the room')
 
     def tearDown(self):
         del self.dojo

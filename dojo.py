@@ -99,15 +99,11 @@ class Dojo(object):
             occupants = room_manager.string_room_occupants(room)
             if occupants:
                 print(occupants)
-                return occupants
             else:
                 print('{} currently has no occupant(s)!'.format(
                     room_name.upper()))
-                return '{} currently has no occupant(s)!'.format(
-                    room_name.upper())
         else:
-            print('{} not a room in Dojo'.format(room_name.upper()))
-            return('{} not a room in Dojo.'.format(room_name.upper()))
+            print('{} not a room in Dojo.'.format(room_name.upper()))
 
     def print_allocations(self, to_file=None):
         ''' print_allocations take a key word argument to_file and defaults to 'n'
@@ -133,7 +129,6 @@ class Dojo(object):
                     return ('Successfully printed allocations to screen')
         else:
             print('There are currently no rooms in Dojo.')
-            return('There are currently no rooms in Dojo.')
 
     def print_unallocated(self, to_file=None):
         # prints people who are unallocated either to the stdout or a file
@@ -163,7 +158,6 @@ class Dojo(object):
             else:
                 print(unallocated_office_text)
                 print(unallocated_living_space_text)
-                return 'Printed Allocation'
         else:
             print('Dojo currently has no person(s) yet!')
             return 'No person in the System Yet!'
@@ -197,7 +191,6 @@ class Dojo(object):
                     person.role == 'fellow') and
                     person.living_space == room_name.upper()):
                 print('You cannot reallocate person to current room.')
-                return 'You cannot reallocate person to current room.'
             else:
                 room_manager.check_room_size(new_room)
                 room_manager.check_person_can_be_in_room(new_room, person)
@@ -210,14 +203,10 @@ class Dojo(object):
         except ValueError:
             print('Room is full, cannot reallocate {}'.format(
                 person.fname.title()))
-            return ('Room is full, cannot reallocate {}'.format(
-                person.fname.title()))
         except TypeError:
             print('Person cannot be reallocated the room')
-            return 'Person cannot be reallocated to the room'
         except IndexError:
             print('Id/Room_Name not found!')
-            return('Id/Room_Name not found!')
 
     def load_people(self, text_file):
         # check to see if it is a valid text file, if not add the extension
@@ -234,10 +223,10 @@ class Dojo(object):
                                         values[1], values[2], values[3])
                     else:
                         raise ValueError
-        except FileNotFoundError:
-            print('unable to locate file in {}'.format(self.DATA_DIR))
         except ValueError:
             print(' invalid format')
+        except:
+            print('unable to locate file in {}'.format(self.DATA_DIR))
 
     def save_state(self, db_name='dojo.db'):
         # check if it is a valid extension else add the extension.
@@ -251,11 +240,8 @@ class Dojo(object):
             db = DojoDb(db_name)
             db.create_tables()
             db.save_data(app_session_pickle)
-            return 'data persisted'
-
         else:
             print('Session has no data to persist to the database.')
-            return ('Session not persisted, No data in app_session')
 
     def load_state(self, db_name):
         # check extension if not create it.
@@ -268,11 +254,9 @@ class Dojo(object):
             self.people = loaded_app_session_data[1]
             print('successful')
         except TypeError:
-            print('Does not exist')
-            return ('Bad Database given')
+            print('Does not exist or Invalid')
         except:
             print('Invalid db')
-            return('Bad Database given')
 
     # These are helper methods used in other dojo methods.
     # HELPER METHODS

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import unittest
 import linecache
+import unittest
+import sys
 from testcontext import Dojo
 from testcontext import expanduser
 
@@ -13,33 +14,37 @@ class TestPrintRoom(unittest.TestCase):
         self.dojo = Dojo()
 
     def test_print_room_when_no_rooms(self):
-        result = self.dojo.print_room('Blue')
-        self.assertEqual(result, 'BLUE not a room in Dojo.')
+        self.dojo.print_room('Blue')
+        value = sys.stdout.getvalue().strip()
+        self.assertEqual(value, 'BLUE not a room in Dojo.')
 
     def test_print_room_invalid_room(self):
-        self.dojo.create_room('office', ['orion'])
-        self.assertEqual(
-            self.dojo.print_room('Valor'), 'VALOR not a room in Dojo.')
+        self.dojo.print_room('Valor')
+        value = sys.stdout.getvalue().strip()
+        self.assertEqual(value, 'VALOR not a room in Dojo.')
 
     def test_print_room_valid_empty_room(self):
         self.dojo.create_room('living_space', ['Maze'])
-        result = self.dojo.print_room('Maze')
-        self.assertEqual(result, 'MAZE currently has no occupant(s)!')
+        self.dojo.print_room('Maze')
+        result = sys.stdout.getvalue().strip()
+        self.assertEqual(result[61:], 'MAZE currently has no occupant(s)!')
 
     def test_print_room_with_office_occupants(self):
         self.dojo.create_room('office', ['Blue'])
         self.dojo.add_person('ladi', 'adeniran', 'fellow')
         self.dojo.add_person('ab', 'soul', 'staff')
-        result = self.dojo.print_room('Blue')
+        self.dojo.print_room('Blue')
+        result = sys.stdout.getvalue().strip()
         self.assertTrue(result)
-        self.assertEqual(result, 'Ladi Adeniran (FELLOW), Ab Soul (STAFF)')
+        self.assertEqual(
+            result[226:], 'Ladi Adeniran (FELLOW), Ab Soul (STAFF)')
 
     def test_print_room_with_living_space_occupants(self):
         self.dojo.create_room('living_space', ['orion'])
         self.dojo.add_person('ladi', 'adeniran', 'fellow', 'y')
-        result = self.dojo.print_room('Orion')
-        self.assertTrue(result)
-        self.assertEqual(result, 'Ladi Adeniran (FELLOW)')
+        self.dojo.print_room('Orion')
+        result = sys.stdout.getvalue().strip()
+        self.assertEqual(result[185:], 'Ladi Adeniran (FELLOW)')
 
     def tearDown(self):
         del self.dojo
@@ -53,15 +58,16 @@ class TestPrintAllocations(unittest.TestCase):
         self.HOME_DIR = expanduser('~')
 
     def test_print_allocations_when_no_room(self):
-        result = self.dojo.print_allocations()
-        self.assertTrue(result)
+        self.dojo.print_allocations()
+        result = sys.stdout.getvalue().strip()
         self.assertEqual(result, 'There are currently no rooms in Dojo.')
 
     def test_print_allocations_to_screen(self):
         self.dojo.create_room('office', ['idanre'])
-        result = self.dojo.print_allocations()
+        self.dojo.print_allocations()
+        result = sys.stdout.getvalue().strip()
         self.assertTrue(result)
-        self.assertEqual(result, 'Successfully printed allocations to screen')
+        self.assertEqual(result[104:], 'IDANRE has no occupants')
 
     def test_print_allocations_to_file(self):
         # test that file is valid and was written into.
@@ -100,9 +106,10 @@ class TestPrintUnallocated(unittest.TestCase):
 
     def test_print_unallocated_to_screen(self):
         self.dojo.add_person('rukky', 'remy', 'staff')
-        result = self.dojo.print_unallocated()
+        self.dojo.print_unallocated()
+        result = sys.stdout.getvalue().strip()
         self.assertTrue(result)
-        self.assertEqual(result, 'Printed Allocation')
+        self.assertEqual(result[108:128], '1 Rukky Remy (STAFF)')
 
     def test_print_unallocated_to_file(self):
         self.dojo.add_person('ric', 'hassani', 'fellow')
@@ -116,6 +123,14 @@ class TestPrintUnallocated(unittest.TestCase):
             unallocated_line1, '(ID) UNALLOCATED LIST OFFICE SPACE')
         self.assertEqual(
             unallocated_line2, '1 Ric Hassani (FELLOW)')
+
+    def test_valid_people_id(self):
+        self.dojo.add_person('remy', 'ma', 'staff')
+        self.dojo.add_person('travis', 'greene', 'staff')
+        self.dojo.add_person('temmy', 'orwase', 'fellow')
+        self.dojo.people_id()
+        result = sys.stdout.getvalue().strip()
+        self.assertTrue(result)
 
     def tearDown(self):
         del self.dojo
