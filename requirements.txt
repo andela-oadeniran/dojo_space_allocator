@@ -1,10 +1,9 @@
 #The dojo allocator's requirement
 
-docopt
-nose
-flake8
-termcolor
-pyfiglet
-coverage
-python-coveralls
-coveralls
+docopt==0.6.2
+nose==1.3.7
+flake8==3.3.0
+termcolor==1.1.0
+pyfiglet==0.7.5
+coverage==4.0.3
+python-coveralls==2.9.0
