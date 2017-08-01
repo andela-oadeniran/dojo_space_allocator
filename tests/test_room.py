@@ -1,35 +1,64 @@
-#!/bin/python3*
-""" comment here"""
-import os, sys
-modelsdir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../models'))
-sys.path.append(modelsdir)
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+#!/usr/bin/env python
 
-
-
-from room import Room
 import unittest
+from testcontext import Room, Office, LivingSpace
 
 
-class TestCreateRoom(unittest.TestCase):
-    """Write Docstring here """
+class TestRoomClass(unittest.TestCase):
+    """This represents the test suite for the Room Class
+    """
+
     def test_create_room_successfully(self):
-        room = Room ('Office', 'Blue')
-        # initial_room_count = len(new_class.all_rooms)
-        # blue_office = Room.create_room("Blue", "office")
-        self.assertTrue(room)
-        self.assertEqual(room.room_name, 'Blue')
-        self.assertEqual(room.room_type, 'Office')
+        new_room = Room(name='Blue', room_type='meeting room')
+        self.assertTrue(new_room)
+        self.assertIsInstance(new_room, Room)
+        self.assertEqual(new_room.name, 'BLUE')
+        self.assertEqual(new_room.room_type, 'meeting room')
+        self.assertEqual(len(new_room.occupants), 0)
 
-        # new_room_count = len(my_class_instance.all_rooms)
-        # self.assertEqual(new_room_count - initial_room_count, 1)
+    def test_repr_name_rooms(self):
+        new_room = Room(name='DWTW', room_type='kitchen')
 
-    # def test_create_room_is_only_office_living:
-    # 	new_class = Room()
+        self.assertEqual(str(new_room), 'DWTW')
 
 
+class TestOfficeClass(unittest.TestCase):
+    """Tests for the Office class a subclass of the Room Class
+    """
+
+    def test_create_office_successfully(self):
+        new_office = Office('Orange')
+        self.assertEqual(new_office.name, 'ORANGE')
+        self.assertIsInstance(new_office, Office)
+        self.assertEqual(new_office.room_type, 'office')
+        self.assertEqual(len(new_office.occupants), 0)
+        self.assertIsInstance(new_office, Room)
+        self.assertEqual(new_office.max_size, 6)
+
+    def test_repr_name_living_spaces(self):
+        new_room = Office('mane')
+        self.assertEqual(str(new_room), 'MANE')
+
+
+class TestLivingSpaceClass(unittest.TestCase):
+    """Test cases for the LivingSpace Model
+    """
+
+    def test_create_living_space_successfully(self):
+        new_living_space = LivingSpace('Orion')
+        self.assertEqual(new_living_space.name, 'ORION')
+        self.assertNotEqual(new_living_space.name, 'BLUE')
+        self.assertEqual(new_living_space.room_type, 'living_space')
+        self.assertIsInstance(new_living_space, Room)
+        self.assertNotIsInstance(new_living_space, Office)
+        self.assertEqual(len(new_living_space.occupants), 0)
+        self.assertEqual(new_living_space.max_size, 4)
+
+    def test_repr_name_living_spaces(self):
+        new_room = LivingSpace('Ephesus')
+        self.assertEqual(str(new_room), 'EPHESUS')
 
 
 
 if '__name__' == '__main__':
-	unittest.main()
+    unittest.main()
